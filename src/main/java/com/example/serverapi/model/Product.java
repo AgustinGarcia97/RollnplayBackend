@@ -3,14 +3,16 @@ package com.example.serverapi.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table
+@Table(name="product")
 public class Product implements Serializable {
     @Id
-    @GeneratedValue
-    private UUID productId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String productId;
     @Column(name="product_name",nullable=false)
     private String productName;
     @Column(name="product_description",nullable=false)
@@ -21,29 +23,39 @@ public class Product implements Serializable {
     private String productCategory; //categoria
     @Column(name="product_stock",nullable=false)
     private double productStock;
-    @ManyToOne(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Listing> listings;
+    @ManyToOne
+    @JoinTable(name="listing_id")
+    private Listing Listing;
 
-    private Listing listing;
+    public List<Listing> getListings() {
+        return listings;
+    }
 
-    public Product(UUID productId, String productName, String productDescription, double productPrice, String productCategory, double productStock) {
-        this.productId = productId;
+    public void setListings(Listing l) {
+        this.listings.add(l);
+    }
+
+    public Product(String productName, String productDescription, double productPrice, String productCategory, double productStock) {
+
         this.productName = productName;
         this.productDescription = productDescription;
         this.productPrice = productPrice;
         this.productCategory = productCategory;
         this.productStock = productStock;
+        this.listings = new ArrayList<>();
+
     }
 
     public Product() {
     }
 
-    public UUID getProductId() {
+    public String getProductId() {
         return productId;
     }
 
-    public void setProductId(UUID productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
@@ -85,5 +97,17 @@ public class Product implements Serializable {
 
     public void setProductStock(double productStock) {
         this.productStock = productStock;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId='" + productId + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", productPrice=" + productPrice +
+                ", productCategory='" + productCategory + '\'' +
+                ", productStock=" + productStock +
+                '}';
     }
 }

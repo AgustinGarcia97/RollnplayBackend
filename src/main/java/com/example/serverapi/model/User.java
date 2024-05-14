@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,16 +22,41 @@ public class User implements Serializable {
     private String name;
     @Column(nullable=false)
     private String password;
-    @Column(nullable=false)
+    @Column(unique=true,nullable=false)
     private String email;
     @Column(nullable=false)
     private String address;
     @Column(name="phone_number",nullable=false)
     private String phoneNumber;
-    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private ArrayList<Listing> listings;
+    @Column(nullable=false, name="is_seller")
+    private boolean isSeller;
+    @Column(nullable=false)
+    private String document;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Listing> listings;
 
-    public User( String username, String name, String password, String email, String address, String phoneNumber) {
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
+
+    public List<Listing> getListings() {
+        return listings;
+    }
+
+    public void setListings(Listing l) {
+        this.listings.add(l);
+    }
+
+    public User(String username, String name, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
 
         this.username = username;
         this.name = name;
@@ -38,6 +64,10 @@ public class User implements Serializable {
         this.email = email;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.document = document;
+        this.listings = new ArrayList<>();
+        this.isSeller = isSeller;
+
     }
 
     public User() {
@@ -47,9 +77,7 @@ public class User implements Serializable {
         return userId;
     }
 
-    public void setUseId(String useId) {
-        this.userId = userId;
-    }
+
 
     public String getUsername() {
         return username;
@@ -97,5 +125,29 @@ public class User implements Serializable {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isSeller=" + isSeller +
+                ", document='" + document + '\'' +
+                ", listings=" + listings +
+                '}';
     }
 }
