@@ -6,14 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-    private String UUID;
+    private UUID userId;
     private String name;
+    private String username;
     private String password;
     private String mail;
-    private List<Listing> listings;
+    private List<ListingDTO> listingsDTO;
+    private List<SaleDTO> salesDTO;
+    private List<PurchaseDTO> purchasesDTO;
 }
