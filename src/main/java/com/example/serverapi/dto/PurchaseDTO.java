@@ -11,6 +11,10 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 public class PurchaseDTO {
-
+    private Long purchaseId;
+    private LocalDateTime purchaseDateTime;
+    private UUID userId;
+    private List<Long> productIds;
+    private List<Long> listingIds;
 
 }
