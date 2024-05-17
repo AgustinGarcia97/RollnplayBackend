@@ -20,7 +20,7 @@ public class ListingDTO {
     private double stock;
     private double price;
     private UUID userId;
-    private Long productId;
+    private ProductDTO product;
     private List<Long> salesId;
     private List<Long> purchaseId;
 }

@@ -1,12 +1,10 @@
 package com.example.serverapi.utils;
 
 import com.example.serverapi.dto.ListingDTO;
+import com.example.serverapi.dto.ProductDTO;
 import com.example.serverapi.dto.PurchaseDTO;
 import com.example.serverapi.dto.UserDTO;
-import com.example.serverapi.model.Listing;
-import com.example.serverapi.model.Purchase;
-import com.example.serverapi.model.Sale;
-import com.example.serverapi.model.User;
+import com.example.serverapi.model.*;
 
 import java.util.stream.Collectors;
 
@@ -22,21 +20,21 @@ public class DTOConverter {
 
         userDTO.setListingsDTO(user.getListings()
                 .stream()
-                .map(this::converToListingDTO)
+                .map(this::convertToListingDTO)
                 .collect(Collectors.toList()));
 
         userDTO.setPurchasesDTO(user.getPurchases());
         return userDTO;
     }
 
-    public ListingDTO converToListingDTO(Listing listing) {
+    public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO listingDTO = new ListingDTO();
         listingDTO.setListingId(listing.getListingId());
         listingDTO.setTitle(listing.getTitle());
         listingDTO.setDescription(listing.getDescription());
         listingDTO.setPrice(listing.getPrice());
         listingDTO.setStock(listing.getStock());
-        listingDTO.setProductId(listing.getProduct().getProductId());
+        listingDTO.setProductDTO(listing.getProduct().getProductId());
 
         listingDTO.setSalesId(listing.getSales()
                 .stream()
@@ -52,9 +50,35 @@ public class DTOConverter {
         return listingDTO;
     }
 
-    public PurchaseDTO converToPurchaseDTO(Purchase purchase) {
+    public PurchaseDTO convertToPurchaseDTO(Purchase purchase) {
         PurchaseDTO purchaseDTO = new PurchaseDTO();
-        purchaseDTO
+        purchaseDTO.setPurchaseId(purchase.getPurchaseId());
+        purchaseDTO.setUserId(purchase.getUser().getUserId());
+        purchaseDTO.setPurchaseDateTime(purchase.getPurchaseDateTime());
+        purchaseDTO.setListingIds(
+                purchase.getListingsPurchases()
+                        .stream()
+                        .map(Listing::getListingId)
+                        .collect(Collectors.toList())
+
+        );
+        purchaseDTO.setProductIds(
+                purchase.getProductsPurchases()
+                        .stream()
+                        .map(Product::getProductId)
+                        .collect(Collectors.toList())
+        );
+        return purchaseDTO;
+    }
+
+    public ProductDTO convertToProductDTO(Product product){
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(product.getProductId());
+        productDTO.setProductName(product.getProductName());
+        productDTO.setProductDescription(product.getProductDescription());
+        productDTO.setProductCategory(product.getProductCategory());
+
+        return productDTO;
     }
 
 
