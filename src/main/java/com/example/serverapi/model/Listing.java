@@ -1,31 +1,42 @@
 package com.example.serverapi.model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name="listing")
+@Data
 public class Listing implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="listing_id")
-    private String listingId;
+    private Long listingId;
     private String title;
-    private String productDescription;
     private String description;
-    private String seller;
     private double stock;
     private double price;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id")
+    @JsonBackReference
     private User user;
 
-    @ManyToOne(fetch =  FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch =  FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name="product_id")
+    @JsonBackReference
     private Product product;
+
+    @ManyToMany(mappedBy="listingsPurchases", fetch = FetchType.LAZY)
+    private List<Purchase> purchases;
+
+    @ManyToMany(mappedBy="listingsSales", fetch = FetchType.LAZY)
+    private List<Sale> sales;
 
     public Listing() {
     }
@@ -37,103 +48,21 @@ public class Listing implements Serializable {
        this.stock = stock;
     }
 
-    public String getListingId() {
-        return listingId;
-    }
-
-    public void setListingId(String listingId) {
-        this.listingId = listingId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public void setProductDescription() {
-        if(product != null){
-            this.productDescription = getProduct().getProductDescription();
-        }
-    }
-
-    public String getSeller() {
-        return seller;
-    }
-
-    public void setSeller(String seller) {
-        if(user != null){
-            this.seller = user.getUsername();
-        }
-    }
-
-    public double getStock() {
-        return stock;
-    }
-
-    public void setStock(double stock) {
-        if(product != null){
-            this.stock = product.getProductStock();
-        }
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
     public void setPrice(double price) {
         if(product != null){
             this.price = product.getProductPrice();
         }
     }
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
-
-        this.product = product;
-        setProductDescription();
-    }
-
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
 
 
-    public String toString() {
-        return "Listing{" +
-                "listingId='" + listingId + '\'' +
-                ", title='" + title + '\'' +
-                ", productDescription='" + productDescription + '\'' +
-                ", description='" + description + '\'' +
-                ", seller='" + seller + '\'' +
-                ", stock=" + stock +
-                ", price=" + price +
 
-                '}';
-    }
 }
 
 

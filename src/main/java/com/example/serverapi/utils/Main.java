@@ -1,19 +1,14 @@
 package com.example.serverapi.utils;
 
-import com.example.serverapi.controller.UserController;
-import com.example.serverapi.database.dao.listing_dao.ListingDAO;
-import com.example.serverapi.database.dao.listing_dao.ListingDAOImplement;
-import com.example.serverapi.database.dao.product_dao.ProductDAO;
-import com.example.serverapi.database.dao.product_dao.ProductDAOImplement;
-import com.example.serverapi.database.dao.user_dao.UserDAO;
-import com.example.serverapi.database.dao.user_dao.UserDAOImplement;
+import com.example.serverapi.database.HibernateAPI.dao.listing_dao.ListingDAO;
+import com.example.serverapi.database.HibernateAPI.dao.listing_dao.ListingDAOImplement;
+import com.example.serverapi.database.HibernateAPI.dao.product_dao.ProductDAO;
+import com.example.serverapi.database.HibernateAPI.dao.product_dao.ProductDAOImplement;
+import com.example.serverapi.database.HibernateAPI.dao.user_dao.UserDAO;
+import com.example.serverapi.database.HibernateAPI.dao.user_dao.UserDAOImplement;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.model.Product;
 import com.example.serverapi.model.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
@@ -93,9 +88,25 @@ public class Main {
         userDAO.createUser(user2);
         userDAO.createUser(user3);
 
-*/
 
         UserDAO userDAO = new UserDAOImplement();
         System.out.println(userDAO.getUserById("346aa7fe-916f-4285-a768-154582c0c184").toString());
+
+
+
+        System.out.println(userDAO.getUserById("346aa7fe-916f-4285-a768-154582c0c184").toString());
+*/
+        User user1 = new User(
+                "seller1",
+                "john doe",
+                "123456",
+                "mail@mail.com",
+                "false street 123",
+                "113422546",
+                "4400949",
+                true
+        );
+        UserDAO userDAO = new UserDAOImplement();
+        userDAO.createUser(user1);
     }
 }

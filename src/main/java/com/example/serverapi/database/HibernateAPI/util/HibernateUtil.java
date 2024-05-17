@@ -1,4 +1,4 @@
-package com.example.serverapi.database.util;
+package com.example.serverapi.database.HibernateAPI.util;
 
 
 import org.hibernate.SessionFactory;

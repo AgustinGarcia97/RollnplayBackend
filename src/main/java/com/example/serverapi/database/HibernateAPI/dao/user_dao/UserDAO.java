@@ -1,4 +1,4 @@
-package com.example.serverapi.database.dao.user_dao;
+package com.example.serverapi.database.HibernateAPI.dao.user_dao;
 
 import com.example.serverapi.model.User;
 

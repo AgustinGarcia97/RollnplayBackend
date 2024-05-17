@@ -1,10 +1,8 @@
-package com.example.serverapi.database.dao.listing_dao;
+package com.example.serverapi.database.HibernateAPI.dao.listing_dao;
 
-import com.example.serverapi.database.util.HibernateUtil;
+import com.example.serverapi.database.HibernateAPI.util.HibernateUtil;
 import com.example.serverapi.exceptions.UserDaoException;
 import com.example.serverapi.model.Listing;
-import com.example.serverapi.model.Product;
-import com.example.serverapi.model.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,7 @@ public class ListingDAOImplement implements ListingDAO {
         Listing listing = null;
         try {
             session.beginTransaction();
-            String id = (String) session.save(l);
+            Long id = (Long) session.save(l);
             System.out.println(id);
             session.getTransaction().commit();
             listing.setListingId(id);
@@ -45,7 +43,7 @@ public class ListingDAOImplement implements ListingDAO {
     }
 
 
-    public Listing updateListing(String id, Map<String, Object> fieldUpdates) {
+    public Listing updateListing(Long id, Map<String, Object> fieldUpdates) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Listing listing = null;
         try{
@@ -100,7 +98,7 @@ public class ListingDAOImplement implements ListingDAO {
     }
 
     @Override
-    public Listing getListingById(String id) {
+    public Listing getListingById(Long id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Listing listing = null;
         try{
@@ -122,7 +120,7 @@ public class ListingDAOImplement implements ListingDAO {
         }
     }
 
-    public void deleteListing(String id) {
+    public void deleteListing(Long id) {
         Listing listingToDelete = getListingById(id);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try{

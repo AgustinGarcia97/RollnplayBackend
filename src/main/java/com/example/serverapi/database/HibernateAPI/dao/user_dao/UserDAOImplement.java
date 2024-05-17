@@ -1,109 +1,102 @@
-package com.example.serverapi.database.dao.product_dao;
+package com.example.serverapi.database.HibernateAPI.dao.user_dao;
 
-import com.example.serverapi.database.util.HibernateUtil;
+import com.example.serverapi.database.HibernateAPI.util.HibernateUtil;
 import com.example.serverapi.exceptions.UserDaoException;
-import com.example.serverapi.model.Product;
 import com.example.serverapi.model.User;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import com.example.serverapi.model.Listing;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-@Service
-public class ProductDAOImplement implements ProductDAO {
 
-    public Product createProduct(Product product) {
+@Service
+public class UserDAOImplement implements UserDAO {
+
+    public User createUser(User user) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            String id = (String) session.save(product);
+            String id = (String) session.save(user);
             session.getTransaction().commit();
-            product.setProductId(id);
+            user.setUserId(id);
         }
         catch(HibernateException e){
-            if(session.getTransaction() != null){
-                session.getTransaction().rollback();
-            }
             e.printStackTrace();
-            throw new UserDaoException("Error al crear el producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         catch(RuntimeException e){
-            if(session.getTransaction() != null){
-                session.getTransaction().rollback();
-            }
             e.printStackTrace();
-            throw new UserDaoException("Error al crear el producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         finally {
             session.close();
-            return product;
+            return user;
         }
     }
 
-    @Override
-    public Product getProductById(String id) {
+    public User getUserById(String id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Product product = null;
+        User user = null;
         try{
             session.beginTransaction();
-            product = session.get(Product.class, id);
+            user = session.get(User.class, id);
             session.getTransaction().commit();
+
         }
         catch(HibernateException e){
             e.printStackTrace();
-            throw new UserDaoException("Error al obtener al producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         catch(RuntimeException e){
             e.printStackTrace();
-            throw new UserDaoException("Error al obtener al producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         finally {
             session.close();
-            return product;
+            return user;
         }
     }
 
-    @Override
-    public Product updateProduct(String id, Map<String, Object> fieldUpdates) {
+    public User updateUser(String id, Map<String,Object> fieldUpdates)  {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        Product product = null;
-        try {
+        User user = null;
+        try{
             session.beginTransaction();
-            product = session.get(Product.class, id);
+            user = session.get(User.class, id);
 
-            for (Map.Entry<String, Object> entry : fieldUpdates.entrySet()) {
+            for(Map.Entry<String, Object> entry : fieldUpdates.entrySet()) {
                 String fieldName = entry.getKey();
                 Object fieldValue = entry.getValue();
 
                 switch (fieldName) {
-                    case "productName":
-                        product.setProductName(fieldValue.toString());
+                    case "name":
+                        user.setName(fieldValue.toString());
                         break;
-                    case "productCategory":
-                        product.setProductCategory(fieldValue.toString());
+                    case "username":
+                        user.setUsername(fieldValue.toString());
                         break;
-                    case "productDescription":
-                        product.setProductDescription(fieldValue.toString());
+                    case "email":
+                        user.setEmail(fieldValue.toString());
                         break;
-                    case "productStock":
-                        product.setProductStock((Double)fieldValue);
+                    case "password":
+                        user.setPassword(fieldValue.toString());
                         break;
-                    case "productPrice":
-                        product.setProductPrice((Double)fieldValue);
+                    case "address":
+                        user.setAddress(fieldValue.toString());
                         break;
-                    case "productListing":
-                        product.setListings((Listing)fieldValue);
+                    case "phoneNumber":
+                        user.setPhoneNumber(fieldValue.toString());
                         break;
                     default:
-                        System.out.println("Nombre de campo no valido: " + fieldName);
+                        System.out.println("Nombre de campo no valido: "+fieldName);
                         break;
                 }
+
             }
-            session.update(product);
+            session.update(user);
             session.getTransaction().commit();
+
+
         }
         catch(HibernateException e){
             if(session.getTransaction() != null){
@@ -121,34 +114,36 @@ public class ProductDAOImplement implements ProductDAO {
         }
         finally{
             session.close();
-            return product;
+            return user;
         }
+
     }
 
-    @Override
-    public void deleteProduct(String id) {
-        Product productToDelete = getProductById(id);
+
+    public void deleteUser(String id) {
+        User userToDelete = getUserById(id);
         Session session = HibernateUtil.getSessionFactory().openSession();
         try{
             session.beginTransaction();
-            session.delete(productToDelete);
+            session.delete(userToDelete);
         }
         catch(HibernateException e){
             if(session.getTransaction() != null){
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-            throw new UserDaoException("Error al eliminar el producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         catch(RuntimeException e){
             if(session.getTransaction() != null){
                 session.getTransaction().rollback();
             }
             e.printStackTrace();
-            throw new UserDaoException("Error al eliminar el producto:", e);
+            throw new UserDaoException("Error al actualizar el usuario:", e);
         }
         finally {
             session.close();
         }
     }
+
 }
