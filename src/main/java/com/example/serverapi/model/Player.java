@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,8 +22,9 @@ public class Player implements Serializable {
     @Column(unique=true, name="number_of_players")
     private String numberOfPlayers;
     @JoinColumn(name="product_id")
-    @ManyToOne(cascade=CascadeType.ALL,fetch =  FetchType.LAZY)
-    private Product product;
+
+    @OneToMany(cascade=CascadeType.ALL,fetch =  FetchType.LAZY, mappedBy = "players")
+    private List<Product> product;
 
 
 
