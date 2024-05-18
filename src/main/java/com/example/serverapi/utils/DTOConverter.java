@@ -1,9 +1,6 @@
 package com.example.serverapi.utils;
 
-import com.example.serverapi.dto.ListingDTO;
-import com.example.serverapi.dto.ProductDTO;
-import com.example.serverapi.dto.PurchaseDTO;
-import com.example.serverapi.dto.UserDTO;
+import com.example.serverapi.dto.*;
 import com.example.serverapi.model.*;
 
 import java.util.stream.Collectors;
@@ -23,7 +20,18 @@ public class DTOConverter {
                 .map(this::convertToListingDTO)
                 .collect(Collectors.toList()));
 
-        userDTO.setPurchasesDTO(user.getPurchases());
+        userDTO.setPurchasesDTO(user.getPurchases()
+                .stream()
+                .map(this::convertToPurchaseDTO)
+                .collect(Collectors.toList())
+        );
+
+        userDTO.setSalesDTO(user.getSales()
+                .stream()
+                .map(this::convertToSaleDTO)
+                .collect(Collectors.toList())
+        );
+
         return userDTO;
     }
 
@@ -34,7 +42,7 @@ public class DTOConverter {
         listingDTO.setDescription(listing.getDescription());
         listingDTO.setPrice(listing.getPrice());
         listingDTO.setStock(listing.getStock());
-        listingDTO.setProductDTO(listing.getProduct().getProductId());
+        listingDTO.setProductDTO(convertToProductDTO(listing.getProduct()));
 
         listingDTO.setSalesId(listing.getSales()
                 .stream()
@@ -76,9 +84,53 @@ public class DTOConverter {
         productDTO.setProductId(product.getProductId());
         productDTO.setProductName(product.getProductName());
         productDTO.setProductDescription(product.getProductDescription());
-        productDTO.setProductCategory(product.getProductCategory());
+        productDTO.setProductCategory(convertToCategoryDTO(product.getCategory()));
+        productDTO.setProductPlayers(convertToPlayersDTO(product.getPlayers()));
 
         return productDTO;
+    }
+
+    public SaleDTO convertToSaleDTO(Sale sale){
+        SaleDTO saleDTO = new SaleDTO();
+        saleDTO.setSaleId(sale.getSaleId());
+        saleDTO.setSaleDate(sale.getSaleDate());
+        saleDTO.setListingsId(
+                sale.getListingsSales()
+                        .stream()
+                        .map(Listing::getListingId)
+                        .collect(Collectors.toList())
+        );
+        saleDTO.setProductIds(
+                sale.getProductsSales()
+                        .stream()
+                        .map(Product::getProductId)
+                        .collect(Collectors.toList())
+        );
+        return saleDTO;
+    }
+
+    public CategoryDTO convertToCategoryDTO(Category category){
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setCategoryId(category.getCategoryId());
+        categoryDTO.setCategoryName(category.getCategoryName());
+        categoryDTO.setProductsIds(category.getProducts()
+                .stream()
+                .map(Product::getProductId)
+                .collect(Collectors.toList()));
+
+        return categoryDTO;
+    }
+
+    public PlayerDTO convertToPlayersDTO(Player player){
+        PlayerDTO playerDTO = new PlayerDTO();
+        playerDTO.setPlayerId(player.getPlayersId());
+        playerDTO.setNumberOfPlayers(player.getNumberOfPlayers());
+        playerDTO.setProductsId(player.getProduct()
+                .stream()
+                .map(Product::getProductId)
+                .collect(Collectors.toList()));
+
+        return playerDTO;
     }
 
 
