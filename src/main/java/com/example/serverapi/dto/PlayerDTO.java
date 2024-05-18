@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerDTO {
     private Long playerId;
     private String numberOfPlayers;
-    private Long productId;
+    private List<Long> productsId;
 
 
 }

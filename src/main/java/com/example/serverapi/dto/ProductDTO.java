@@ -11,9 +11,8 @@ public class ProductDTO {
     private Long productId;
     private String productName;
     private String productDescription;
-    private String productCategory;
-    private List<CategoryDTO> categories;
-    private List<PlayerDTO> playerList;
+    private CategoryDTO productCategory;
+    private PlayerDTO productPlayers;
     private List<Long> listingIds;
     private List<Long> salesIds;
     private List<Long> purchaseIds;
