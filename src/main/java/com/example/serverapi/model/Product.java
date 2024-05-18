@@ -1,5 +1,6 @@
 package com.example.serverapi.model;
 
+import com.example.serverapi.dto.PlayerDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.serverapi.model.Category;
@@ -31,13 +32,8 @@ public class Product implements Serializable {
     @Column(name="product_stock",nullable=false)
     private double productStock;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "product_category",
-            joinColumns = @JoinColumn(name="product_id"),
-            inverseJoinColumns = @JoinColumn(name="category_id")
-    )
-    private List<Category> categories;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Category category;
 
     @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
     private List<Sale> sales;
@@ -50,9 +46,9 @@ public class Product implements Serializable {
     @JsonManagedReference
     private List<Listing> listings;
 
-    @OneToMany(mappedBy="product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private List<Player> playerList;
+    private Player players;
 
 
 
