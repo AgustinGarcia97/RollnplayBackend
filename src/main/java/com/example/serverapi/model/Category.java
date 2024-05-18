@@ -20,8 +20,9 @@ public class Category implements Serializable {
     @Column(name="category_name")
     private String categoryName;
 
-    @ManyToMany(
-            mappedBy="categories",
+    @OneToMany(
+            mappedBy="category",
+            cascade=CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private List<Product> products;
