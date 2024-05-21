@@ -8,6 +8,7 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class UserDAOImplement implements UserDAO {
@@ -16,7 +17,7 @@ public class UserDAOImplement implements UserDAO {
         Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            String id = (String) session.save(user);
+            UUID id = (UUID) session.save(user);
             session.getTransaction().commit();
             user.setUserId(id);
         }
