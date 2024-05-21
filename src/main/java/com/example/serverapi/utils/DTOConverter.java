@@ -2,10 +2,20 @@ package com.example.serverapi.utils;
 
 import com.example.serverapi.dto.*;
 import com.example.serverapi.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 public class DTOConverter {
+
+
+
+    @Autowired
+    public DTOConverter() {
+
+    }
 
     public UserDTO convertToUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
