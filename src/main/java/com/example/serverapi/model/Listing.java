@@ -49,9 +49,7 @@ public class Listing implements Serializable {
     }
 
     public void setPrice(double price) {
-        if(product != null){
-            this.price = product.getProductPrice();
-        }
+        this.price = price;
     }
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
