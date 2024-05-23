@@ -25,14 +25,9 @@ public class Product implements Serializable {
     private String productName;
     @Column(name="product_description",nullable=false)
     private String productDescription;
-    @Column(name="product_price",nullable=false)
-    private double productPrice;
-    @Column(name="product_category",nullable=false)
-    private String productCategory; //categoria
-    @Column(name="product_stock",nullable=false)
-    private double productStock;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Category category;
 
     @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
@@ -46,23 +41,22 @@ public class Product implements Serializable {
     @JsonManagedReference
     private List<Listing> listings;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY)
     @JsonManagedReference
     private Player players;
 
 
 
-    public Product(String productName, String productDescription, double productPrice, String productCategory, double productStock) {
+    public Product(String productName, String productDescription, double productPrice,  double productStock) {
         this.productName = productName;
         this.productDescription = productDescription;
-        this.productPrice = productPrice;
-        this.productCategory = productCategory;
-        this.productStock = productStock;
         this.listings = new ArrayList<>();
     }
 
     public Product() {
     }
+
+
 
     public void setListings(Listing l) {
         this.listings.add(l);
