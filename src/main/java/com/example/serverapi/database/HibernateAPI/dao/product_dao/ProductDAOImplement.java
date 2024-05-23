@@ -79,17 +79,8 @@ public class ProductDAOImplement implements ProductDAO {
                     case "productName":
                         product.setProductName(fieldValue.toString());
                         break;
-                    case "productCategory":
-                        product.setProductCategory(fieldValue.toString());
-                        break;
                     case "productDescription":
                         product.setProductDescription(fieldValue.toString());
-                        break;
-                    case "productStock":
-                        product.setProductStock((Double)fieldValue);
-                        break;
-                    case "productPrice":
-                        product.setProductPrice((Double)fieldValue);
                         break;
                     case "productListing":
                         product.setListings((Listing)fieldValue);
