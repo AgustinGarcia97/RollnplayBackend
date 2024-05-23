@@ -1,20 +1,25 @@
 package com.example.serverapi.utils;
 
+import com.example.serverapi.database.service.ProductService;
+import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.*;
 import com.example.serverapi.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 public class DTOConverter {
 
 
-
+    private final UserService userService;
+    private final ProductService productService;
     @Autowired
-    public DTOConverter() {
-
+    public DTOConverter(UserService userService, ProductService productService) {
+        this.userService = userService;
+        this.productService = productService;
     }
 
     public UserDTO convertToUserDTO(User user) {
@@ -47,13 +52,13 @@ public class DTOConverter {
 
     public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO listingDTO = new ListingDTO();
-        listingDTO.setListingId(listing.getListingId());
+       // listingDTO.setListingId(listing.getListingId());
         listingDTO.setTitle(listing.getTitle());
         listingDTO.setDescription(listing.getDescription());
         listingDTO.setPrice(listing.getPrice());
         listingDTO.setStock(listing.getStock());
         listingDTO.setProductDTO(convertToProductDTO(listing.getProduct()));
-
+        /*
         listingDTO.setSalesId(listing.getSales()
                 .stream()
                 .map(Sale::getSaleId)
@@ -65,6 +70,8 @@ public class DTOConverter {
                 .map(Purchase::getPurchaseId)
                 .collect(Collectors.toList())
         );
+        */
+
         return listingDTO;
     }
 
@@ -168,6 +175,27 @@ public class DTOConverter {
     }
 
 
+    public Listing convertToListing(ListingDTO listingDTO) {
+        Listing listing = new Listing();
 
+        listing.setTitle(listingDTO.getTitle());
+        listing.setDescription(listingDTO.getDescription());
+        listing.setPrice(listingDTO.getPrice());
+        listing.setStock(listingDTO.getStock());
 
+        //listing.setUser(userService.getUserById(listingDTO.getUserId()));
+        listing.setUser(null);
+        Product product = productService.getProductByProductName(listingDTO.getProductDTO().getProductName());
+
+        if(product != null){
+            listing.setProduct(product);
+        }
+        else{
+            Product p =  convertToProduct(listingDTO.getProductDTO());
+            productService.createProduct(p);
+            listing.setProduct(p);
+        }
+
+        return listing;
+    }
 }
