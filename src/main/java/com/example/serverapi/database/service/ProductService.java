@@ -1,7 +1,12 @@
 package com.example.serverapi.database.service;
 
+import com.example.serverapi.database.repository.CategoryRepository;
+import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
+import com.example.serverapi.model.Category;
+import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +18,14 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private PlayerRepository playerRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public Product findByName(String name) {
         return productRepository.findByProductName(name);
@@ -26,11 +39,25 @@ public class ProductService {
 
     public Product createProduct(Product product) {
         Product p = null;
-        if (!existsProduct(product.getProductId())){
-            p = productRepository.save(product);
-        }
-        return p;
 
+        //Busca la si el registro numberOfPlayers si existe
+        String numberOfPlayers = product.getPlayers().getNumberOfPlayers();
+        Player existingPlayer = playerRepository.findByNumberOfPlayers(numberOfPlayers);
+        //Si la cantDeJugadores ya existe en la tabla Players, no la crea, sino que agrega la que ya existe
+        if (existingPlayer != null) {
+            product.setPlayers(existingPlayer);
+        }
+
+        //Busca la categoria si existe
+        String categoryName = product.getCategory().getCategoryName();
+        Category categoryExisting = categoryRepository.findFirstByCategoryName(categoryName);
+        //Si la categoria ya existe en la tabla Category, no la crea, sino que agrega la que ya existe
+        if(categoryExisting != null) {
+            product.setCategory(categoryExisting);
+        }
+
+        p = productRepository.save(product);
+        return p;
     }
 
 
