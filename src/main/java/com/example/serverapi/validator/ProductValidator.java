@@ -23,13 +23,13 @@ public class ProductValidator {
         if(product.getProductName() == null){
             missingValues.add("Nombre del producto");
         }
-        else if(product.getProductDescription() == null){
+        if(product.getProductDescription() == null){
             missingValues.add("Descripcion del producto");
         }
-        else if(product.getCategory() == null){
+        if(product.getCategory() == null){
             missingValues.add("Categoria del producto");
         }
-        else if(product.getPlayers() == null){
+        if(product.getPlayers() == null){
             missingValues.add("Jugadores del producto");
         }
 
