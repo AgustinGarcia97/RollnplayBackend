@@ -75,5 +75,9 @@ public class ProductService {
         return findById(id) != null;
     }
 
+    public Product getProductByProductName(String productName) {
+        return productRepository.findByProductName(productName);
+    }
+
 
 }
