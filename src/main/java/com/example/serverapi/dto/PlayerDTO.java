@@ -11,5 +11,10 @@ public class PlayerDTO {
     private String numberOfPlayers;
     private List<Long> productsId;
 
+    public PlayerDTO(Long playerId, String numberOfPlayers) {
+        this.playerId = playerId;
+        this.numberOfPlayers = numberOfPlayers;
+    }
+
 
 }
