@@ -2,6 +2,8 @@ package com.example.serverapi.controller;
 
 
 import com.example.serverapi.database.service.ProductService;
+import com.example.serverapi.dto.CategoryDTO;
+import com.example.serverapi.dto.PlayerDTO;
 import com.example.serverapi.dto.ProductDTO;
 import com.example.serverapi.exceptions.ProductValidationException;
 import com.example.serverapi.model.Category;
@@ -57,8 +59,14 @@ public class ProductController {
 
 
     @PostMapping("/create-product")
-    public ResponseEntity<String> addProduct(@RequestBody Product product) {
+    public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO1) {
+        ProductDTO productDTO = new ProductDTO(0L,"Life","Descripcion de producto",
+                new CategoryDTO(3L,"Familiar"),
+                new PlayerDTO(3L,"2-4 jugadores"));
+        Product product;
         try{
+            product = dtoConverter.convertToProduct(productDTO);
+
             this.productValidator.validateProduct(product);
 
         }
