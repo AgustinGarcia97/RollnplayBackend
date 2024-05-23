@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -17,7 +18,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUserById(String UUID) {
-        return userRepository.findById(UUID).orElseThrow(() -> new RuntimeException("User not found"));
+    public User getUserById(UUID id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
