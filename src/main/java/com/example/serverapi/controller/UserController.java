@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.serverapi.model.User;
 
+import java.util.UUID;
+
 @RestController
 public class UserController {
 
@@ -20,7 +22,7 @@ public class UserController {
 
     @GetMapping("/getUser")
     public User getUsers(){
-        return this.userService.getUserById("7c72d9f4-3bc0-4b21-9216-65f3ad2dde2b");
+        return this.userService.getUserById(UUID.randomUUID());
 
     }
 
