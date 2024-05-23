@@ -143,5 +143,31 @@ public class DTOConverter {
         return playerDTO;
     }
 
+    /**  DTO a Objeto  **/
+    public Product convertToProduct(ProductDTO productDTO){
+        Product product = new Product();
+
+        product.setProductName(productDTO.getProductName());
+        product.setProductDescription(productDTO.getProductDescription());
+        product.setCategory(convertToCategory(productDTO.getProductCategory()));
+        product.setPlayers(convertToPlayers(productDTO.getProductPlayers()));
+        System.out.println(product.toString());
+        return product;
+    }
+    public Category convertToCategory(CategoryDTO categoryDTO){
+        Category category = new Category();
+        category.setCategoryName(categoryDTO.getCategoryName());
+        return category;
+    }
+
+    public Player convertToPlayers(PlayerDTO playerDTO){
+        Player player = new Player();
+        player.setNumberOfPlayers(playerDTO.getNumberOfPlayers());
+
+        return player;
+    }
+
+
+
 
 }
