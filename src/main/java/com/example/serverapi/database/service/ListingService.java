@@ -30,4 +30,6 @@ public class ListingService {
     public void deleteListing(long id) {
         listingRepository.deleteById(id);
     }
+
+
 }
