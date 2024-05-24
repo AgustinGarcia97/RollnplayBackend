@@ -69,9 +69,7 @@ public class User implements Serializable {
     public User() {
     }
 
-    public void setListings(Listing l) {
-        this.listings.add(l);
-    }
+
 
     public boolean isSeller() {
         return isSeller;

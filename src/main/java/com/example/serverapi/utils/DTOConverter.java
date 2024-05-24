@@ -9,6 +9,7 @@ import com.example.serverapi.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,10 @@ public class DTOConverter {
         userDTO.setPassword(user.getPassword());
         userDTO.setMail(user.getEmail());
         userDTO.setUsername(user.getUsername());
-
+        userDTO.setAdress(user.getAddress());
+        userDTO.setDocument(userDTO.getDocument());
+        userDTO.setPhoneNumber(user.getPhoneNumber());
+        userDTO.setUsername(user.getUsername());
         userDTO.setListingsDTO(user.getListings()
                 .stream()
                 .map(this::convertToListingDTO)
@@ -159,6 +163,61 @@ public class DTOConverter {
     }
 
     /**  DTO a Objeto  **/
+
+    public User convertToUser(UserDTO userDTO){
+        User user = new User();
+        //El DTO. Es de un usuario que ya existe? Si es asi actualizo sus listas correspondientes
+        if(userDTO.getUserId() != null){
+            user.setUserId(userDTO.getUserId());
+
+            if(userDTO.getListingsDTO() != null ){
+                user.setListings(
+                        userDTO.getListingsDTO()
+                                .stream()
+                                .map(this::convertToListing)
+                                .collect(Collectors.toList()));
+            }
+
+            if(userDTO.getSalesDTO() != null){
+                user.setSales(
+                        userDTO.getSalesDTO()
+                                .stream()
+                                .map(this::convertToSales)
+                                .collect(Collectors.toList()));
+            }
+
+            if(userDTO.getPurchasesDTO() != null){
+                user.setPurchases(
+                        userDTO.getPurchasesDTO()
+                                .stream()
+                                .map(this::convertToPurchase)
+                                .collect(Collectors.toList())
+                );
+            }
+
+
+
+
+        } else{ //sino me instancia por primera vez sus listas (estaria creando un nuevo usuario como asi sus entidades relacioandas)
+            user.setListings(new ArrayList<>());
+            user.setSales(new ArrayList<>());
+            user.setPurchases(new ArrayList<>());
+        }
+        user.setEmail(userDTO.getMail());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
+        user.setSeller(userDTO.isSeller());
+        user.setName(userDTO.getName());
+        user.setAddress(userDTO.getAdress());
+        user.setDocument(userDTO.getDocument());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        return user;
+
+    }
+
+
+
+
     public Product convertToProduct(ProductDTO productDTO){
         Product product = new Product();
         if(productDTO.getProductId() != null || productDTO.getProductId() != 0L){
@@ -184,6 +243,18 @@ public class DTOConverter {
         return player;
     }
 
+    public Sale convertToSales(SaleDTO saleDTO){
+        Sale sale = new Sale();
+        sale.setSaleId(saleDTO.getSaleId());
+        sale.setSaleDate(saleDTO.getSaleDate());
+        Optional<User> u = userService.getUserById(saleDTO.getUserId());
+        if(u.isPresent()){
+            sale.setUser(u.get());
+        }
+
+        return sale;
+    }
+
 
     public Listing convertToListing(ListingDTO listingDTO) {
         Listing listing = new Listing();
@@ -199,8 +270,10 @@ public class DTOConverter {
         listing.setPrice(listingDTO.getPrice());
         listing.setStock(listingDTO.getStock());
         listing.setState(listingDTO.getListingState());
-        //listing.setUser(userService.getUserById(listingDTO.getUserId()));
-        listing.setUser(null);
+        Optional<User> u = userService.getUserById(listingDTO.getUserId());
+        if(u.isPresent()){
+            listing.setUser(u.get());
+        }
         Product product = productService.getProductByProductName(listingDTO.getProductDTO().getProductName());
         listing.setImages(
                 listingDTO
@@ -234,5 +307,19 @@ public class DTOConverter {
         }
         return img;
 
+    }
+    //controlaar que no duplique datos en la db
+    public Purchase convertToPurchase(PurchaseDTO purchaseDTO){
+        Purchase purchase = null;
+        if(purchaseDTO.getPurchaseId() == null) {
+            purchase = new Purchase();
+        }
+        else{
+            purchase.setPurchaseId(purchaseDTO.getPurchaseId());
+        }
+        purchase.setPurchaseId(purchaseDTO.getPurchaseId());
+        purchase.setPurchaseDateTime(purchaseDTO.getPurchaseDateTime());
+
+        return purchase;
     }
 }

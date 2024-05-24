@@ -16,8 +16,14 @@ public class UserDTO {
     private String name;
     private String username;
     private String password;
+    private String adress;
+    private String phoneNumber;
+    private String document;
     private String mail;
     private List<ListingDTO> listingsDTO;
     private List<SaleDTO> salesDTO;
     private List<PurchaseDTO> purchasesDTO;
+    private boolean isSeller;
+
+
 }
