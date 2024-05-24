@@ -1,11 +1,10 @@
 package com.example.serverapi.controller;
 
+import com.example.serverapi.database.service.ImageService;
 import com.example.serverapi.database.service.ListingService;
-import com.example.serverapi.dto.CategoryDTO;
-import com.example.serverapi.dto.ListingDTO;
-import com.example.serverapi.dto.PlayerDTO;
-import com.example.serverapi.dto.ProductDTO;
+import com.example.serverapi.dto.*;
 import com.example.serverapi.exceptions.ListingValidationException;
+import com.example.serverapi.model.Image;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.utils.DTOConverter;
 import com.example.serverapi.validator.ListingValidator;
@@ -13,11 +12,10 @@ import com.example.serverapi.validator.ProductValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+import java.util.*;
+
 
 @RestController
 public class ListingController {
@@ -32,19 +30,39 @@ public class ListingController {
 
     @Autowired
     private ListingValidator listingValidator;
+    @Autowired
+    private ImageService imageService;
 
+    //cantidad jugadres trae todas los ids de producto -> probablemente sea el DTO de player, lo mismo category/
+    @GetMapping("/get-listing")
+    public ResponseEntity<?> getListing(@RequestParam long listingId) {
+        try{
+            Optional<Listing> listing = listingService.getListing(listingId);
+            if(listing.isPresent()){
+                ListingDTO listingDTO = dtoConverter.convertToListingDTO(listing.get());
+                return new ResponseEntity<>(listingDTO, HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        catch(Exception e){
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("/create-listing")
     public ResponseEntity<String> createListing(@RequestBody ListingDTO listingDTO1) {
-        ListingDTO listingDTO = new ListingDTO(
+        ListingDTO listingDTO = new ListingDTO( 0L,
                 "Vendo algun juego random",
                 "Descripcion de la venta random",
                 10,
                 999.99,
                 UUID.fromString("7c72d9f4-3bc0-4b21-9216-65f3ad2dde2b"),
-                new ProductDTO("Monopoly","juego de mesa",
+                new ProductDTO(1L,"Monopoly","juego de mesa",
                         new CategoryDTO(0L,"familiar"),
-                        new PlayerDTO(0L, "2 a 4 jugadores"))
+                        new PlayerDTO(0L, "2 a 4 jugadores")),
+                true,
+                null
         );
         Listing listing;
         try{
@@ -55,7 +73,46 @@ public class ListingController {
         catch(ListingValidationException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        listingService.createListing(listing);
+        listingService.createOrUpdateListing(listing);
         return new ResponseEntity<>("Publicacion creada correctamente", HttpStatus.CREATED);
     }
+
+    @PostMapping("update-listing")
+    public ResponseEntity<String> updateListing(@RequestBody ListingDTO listingDTO) {
+        try{
+
+            ListingDTO listingDTO1 = new ListingDTO(1L,"nuevo titulo de venta random 3","nueva descripcion de la venta random2",39,999.99,null,
+                    new ProductDTO(1L,"Clue", "", new CategoryDTO(0L,"familiar"), new PlayerDTO(0L, "2 a 4 jugadores")),
+                    true,
+                    Arrays.asList(
+                            new ImageDTO("url3", 1L),
+                            new ImageDTO("url5", 1L),
+                            new ImageDTO("url6",1L)
+            ));
+            listingValidator.validateListing(listingDTO1);
+            Listing listing = dtoConverter.convertToListing(listingDTO1);
+            listingService.createOrUpdateListing(listing);
+
+            return new ResponseEntity<>("Publicacion creada correctamente", HttpStatus.CREATED);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    //DELETE
+    @DeleteMapping("/delete-listing")
+    public ResponseEntity<String> deleteListing(@RequestParam long listingId) {
+        try{
+            listingService.deleteListing(listingId);
+            return new ResponseEntity<>("Publicacion eliminada correctamente", HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }
