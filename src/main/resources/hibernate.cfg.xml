@@ -46,5 +46,6 @@
                         <mapping class="com.example.serverapi.model.Purchase"></mapping>
                         <mapping class="com.example.serverapi.model.Category"></mapping>
                         <mapping class="com.example.serverapi.model.Player"></mapping>
+                        <mapping class="com.example.serverapi.model.Image"></mapping>
                 </session-factory>
         </hibernate-configuration>

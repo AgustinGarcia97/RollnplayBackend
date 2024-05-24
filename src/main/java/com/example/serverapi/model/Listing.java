@@ -21,7 +21,7 @@ public class Listing implements Serializable {
     private String description;
     private double stock;
     private double price;
-
+    private boolean state;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="user_id")
     @JsonBackReference
@@ -37,6 +37,9 @@ public class Listing implements Serializable {
 
     @ManyToMany(mappedBy="listingsSales", fetch = FetchType.LAZY)
     private List<Sale> sales;
+
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     public Listing() {
     }
