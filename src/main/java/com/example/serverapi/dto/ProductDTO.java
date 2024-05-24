@@ -17,7 +17,8 @@ public class ProductDTO {
     private CategoryDTO productCategory;
     private PlayerDTO productPlayers;
 
-    public ProductDTO(String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers) {
+    public ProductDTO(long productId,String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers) {
+        this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
         this.productCategory = productCategory;
