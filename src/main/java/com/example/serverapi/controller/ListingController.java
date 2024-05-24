@@ -2,6 +2,7 @@ package com.example.serverapi.controller;
 
 import com.example.serverapi.database.service.ImageService;
 import com.example.serverapi.database.service.ListingService;
+import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.*;
 import com.example.serverapi.exceptions.ListingValidationException;
 import com.example.serverapi.model.Image;
@@ -32,6 +33,8 @@ public class ListingController {
     private ListingValidator listingValidator;
     @Autowired
     private ImageService imageService;
+    @Autowired
+    private UserService userService;
 
     //cantidad jugadres trae todas los ids de producto -> probablemente sea el DTO de player, lo mismo category/
     @GetMapping("/get-listing")
@@ -42,6 +45,22 @@ public class ListingController {
                 ListingDTO listingDTO = dtoConverter.convertToListingDTO(listing.get());
                 return new ResponseEntity<>(listingDTO, HttpStatus.OK);
             }else{
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        }
+        catch(Exception e){
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    //testear -> trae todas las publicaciones del usuario
+    @GetMapping("get-listing-user")
+    public ResponseEntity<?> getListingUser(@RequestParam UUID userId) {
+        try{
+            if(userService.getUserById(userId) != null){
+                List<Listing> userListings = userService.getListingById(userId);
+                return new ResponseEntity<>(userListings, HttpStatus.OK);
+            }
+            else{
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
