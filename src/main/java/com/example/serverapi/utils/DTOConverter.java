@@ -1,5 +1,7 @@
 package com.example.serverapi.utils;
 
+import com.example.serverapi.database.service.ImageService;
+import com.example.serverapi.database.service.ListingService;
 import com.example.serverapi.database.service.ProductService;
 import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.*;
@@ -7,6 +9,7 @@ import com.example.serverapi.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,10 +19,15 @@ public class DTOConverter {
 
     private final UserService userService;
     private final ProductService productService;
+    private final ListingService listingService;
+    private final ImageService imageService;
     @Autowired
-    public DTOConverter(UserService userService, ProductService productService) {
+    public DTOConverter(UserService userService, ProductService productService, ListingService listingService, ImageService imageService) {
         this.userService = userService;
         this.productService = productService;
+        this.listingService = listingService;
+
+        this.imageService = imageService;
     }
 
     public UserDTO convertToUserDTO(User user) {
@@ -153,12 +161,14 @@ public class DTOConverter {
     /**  DTO a Objeto  **/
     public Product convertToProduct(ProductDTO productDTO){
         Product product = new Product();
-
+        if(productDTO.getProductId() != null || productDTO.getProductId() != 0L){
+            product.setProductId(productDTO.getProductId());
+        }
         product.setProductName(productDTO.getProductName());
         product.setProductDescription(productDTO.getProductDescription());
         product.setCategory(convertToCategory(productDTO.getProductCategory()));
         product.setPlayers(convertToPlayers(productDTO.getProductPlayers()));
-        System.out.println(product.toString());
+
         return product;
     }
     public Category convertToCategory(CategoryDTO categoryDTO){
@@ -177,25 +187,52 @@ public class DTOConverter {
 
     public Listing convertToListing(ListingDTO listingDTO) {
         Listing listing = new Listing();
+        Optional<Listing> request = listingService.getListingByListingId(listingDTO.getListingId());
+        // en caso de querer actualizar un Listing, se busca para actualizar el existente, y no crear uno nuevo.
+        //Al existir ya tiene un Id existente cargado, por eso no crea uno nuevo.
+        if(request.isPresent()){
+               listing = request.get();
+           }
 
         listing.setTitle(listingDTO.getTitle());
         listing.setDescription(listingDTO.getDescription());
         listing.setPrice(listingDTO.getPrice());
         listing.setStock(listingDTO.getStock());
-
+        listing.setState(listingDTO.getListingState());
         //listing.setUser(userService.getUserById(listingDTO.getUserId()));
         listing.setUser(null);
         Product product = productService.getProductByProductName(listingDTO.getProductDTO().getProductName());
+        listing.setImages(
+                listingDTO
+                        .getImages()
+                        .stream()
+                        .map(this::convertToImage)
+                        .collect(Collectors.toList())
+        );
 
+        //Si el producto buscado no es nulo, lo agrega. Esto tambien evita que no se cargue un registro duplicado en la tabla de Product
         if(product != null){
             listing.setProduct(product);
         }
         else{
             Product p =  convertToProduct(listingDTO.getProductDTO());
-            productService.createProduct(p);
             listing.setProduct(p);
         }
 
         return listing;
+    }
+
+    public Image convertToImage(ImageDTO imageDTO){
+        Image img = imageService.getImageByImageUrl(imageDTO.getImageUrl());
+        if(img == null){
+            img = new Image();
+            img.setImageUrl(imageDTO.getImageUrl());
+            Optional<Listing> request = (listingService.getListing(imageDTO.getListingId()));
+            if(request.isPresent()){
+                img.setListing(request.get());
+            }
+        }
+        return img;
+
     }
 }
