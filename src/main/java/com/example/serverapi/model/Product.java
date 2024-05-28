@@ -27,7 +27,7 @@ public class Product implements Serializable {
     private String productDescription;
 
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade =CascadeType.MERGE, fetch = FetchType.LAZY)
     private Category category;
 
     @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
