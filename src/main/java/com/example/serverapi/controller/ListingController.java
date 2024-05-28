@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -52,6 +53,23 @@ public class ListingController {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("get-all-listing")
+    public ResponseEntity<?> getAllListing() {
+        try{
+          List<ListingDTO>  listingDTO = listingService
+                  .getAllListings().stream()
+                  .map(listing -> dtoConverter.convertToListingDTO(listing))
+                  .collect(Collectors.toList());
+
+          return new ResponseEntity<>(listingDTO, HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     //testear -> trae todas las publicaciones del usuario
     @GetMapping("get-listing-user")
     public ResponseEntity<?> getListingUser(@RequestParam UUID userId) {
@@ -72,12 +90,12 @@ public class ListingController {
     @PostMapping("/create-listing")
     public ResponseEntity<String> createListing(@RequestBody ListingDTO listingDTO1) {
         ListingDTO listingDTO = new ListingDTO( 0L,
-                "Vendo algun juego random",
-                "Descripcion de la venta random",
+                "Vendo MONOPOLY",
+                "Descripcion de la venta de MONOPOLY",
                 10,
                 999.99,
-                UUID.fromString("7c72d9f4-3bc0-4b21-9216-65f3ad2dde2b"),
-                new ProductDTO(1L,"Monopoly","juego de mesa",
+                UUID.fromString("4ac1ef3b-8ce5-4675-9c12-8d583d37096d"),
+                new ProductDTO(9L,"Monopoly","juego de mesa",
                         new CategoryDTO(0L,"familiar"),
                         new PlayerDTO(0L, "2 a 4 jugadores")),
                 true,
@@ -95,7 +113,7 @@ public class ListingController {
         listingService.createOrUpdateListing(listing);
         return new ResponseEntity<>("Publicacion creada correctamente", HttpStatus.CREATED);
     }
-
+    //Redundante ya que create-listing tambien sirve para actualizar
     @PostMapping("update-listing")
     public ResponseEntity<String> updateListing(@RequestBody ListingDTO listingDTO) {
         try{

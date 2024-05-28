@@ -6,6 +6,7 @@ import com.example.serverapi.model.Listing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +30,10 @@ public class ListingService {
 
     public void deleteListing(long id) {
         listingRepository.deleteById(id);
+    }
+
+    public List<Listing> getAllListings() {
+        return listingRepository.findAll();
     }
 
 

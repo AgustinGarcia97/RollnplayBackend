@@ -11,6 +11,7 @@ import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 import com.example.serverapi.utils.DTOConverter;
 import com.example.serverapi.validator.ProductValidator;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {
@@ -47,7 +49,7 @@ public class ProductController {
                 return new ResponseEntity<>(productDTO, HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>("NOOOOO",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Producto no encontrado",HttpStatus.NOT_FOUND);
             }
         }
         catch(Exception e){
@@ -57,11 +59,26 @@ public class ProductController {
 
     }
 
+    @GetMapping("/get-all-products")
+    public ResponseEntity<?> getAllProducts() {
+        try{
+            List<ProductDTO> productsDTO = productService.getAllProducts()
+                    .stream()
+                    .map(product -> dtoConverter.convertToProductDTO(product))
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(productsDTO, HttpStatus.OK);
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 
     @PostMapping("/create-product")
-    public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO1) {
-        ProductDTO productDTO = new ProductDTO(0L,"Life","Descripcion de producto",
-                new CategoryDTO(3L,"Familiar"),
+    public ResponseEntity<String> addProduct() {
+        ProductDTO productDTO = new ProductDTO(0L,"Uno"," descripcion de producto",
+                new CategoryDTO(3L,"Juego familiar"),
                 new PlayerDTO(3L,"2-4 jugadores"));
         Product product;
         try{
@@ -78,6 +95,21 @@ public class ProductController {
         return new ResponseEntity<>("Producto creado correctamente", HttpStatus.CREATED);
 
     }
+
+    @DeleteMapping("/delete-product")
+    public ResponseEntity<String> deleteProduct(@RequestParam long productId){
+        try{
+            productService.deleteProduct(productId);
+            return new ResponseEntity<>("Producto eliminado correctamente",HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>("Producto no encontrado, o Id invalido",HttpStatus.BAD_REQUEST);
+
+        }
+
+    }
+
+
 
 
 }

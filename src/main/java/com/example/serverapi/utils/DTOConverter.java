@@ -64,7 +64,8 @@ public class DTOConverter {
 
     public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO listingDTO = new ListingDTO();
-       // listingDTO.setListingId(listing.getListingId());
+        listingDTO.setListingId(listing.getListingId());
+        //listingDTO.setUserId(listing.getUser().getUserId()); descomentar cuando se creen nuevos usuarios
         listingDTO.setTitle(listing.getTitle());
         listingDTO.setDescription(listing.getDescription());
         listingDTO.setPrice(listing.getPrice());
@@ -220,6 +221,7 @@ public class DTOConverter {
 
     public Product convertToProduct(ProductDTO productDTO){
         Product product = new Product();
+
         if(productDTO.getProductId() != null || productDTO.getProductId() != 0L){
             product.setProductId(productDTO.getProductId());
         }
@@ -273,15 +275,19 @@ public class DTOConverter {
         Optional<User> u = userService.getUserById(listingDTO.getUserId());
         if(u.isPresent()){
             listing.setUser(u.get());
+
         }
         Product product = productService.getProductByProductName(listingDTO.getProductDTO().getProductName());
-        listing.setImages(
-                listingDTO
-                        .getImages()
-                        .stream()
-                        .map(this::convertToImage)
-                        .collect(Collectors.toList())
-        );
+
+        if(listingDTO.getImages() != null){
+            listing.setImages(
+                    listingDTO
+                            .getImages()
+                            .stream()
+                            .map(this::convertToImage)
+                            .collect(Collectors.toList())
+            );
+        }
 
         //Si el producto buscado no es nulo, lo agrega. Esto tambien evita que no se cargue un registro duplicado en la tabla de Product
         if(product != null){
