@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.serverapi.model.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -44,6 +46,22 @@ public class UserController {
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @GetMapping("/get-all-users")
+    public ResponseEntity<?> getAllUsers() {
+        try{
+            List<UserDTO> usersDTOList = userService
+                    .findAll()
+                    .stream()
+                    .map(user -> dtoConverter.convertToUserDTO(user))
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(usersDTOList, HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     @PostMapping("/create-user")
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO){
