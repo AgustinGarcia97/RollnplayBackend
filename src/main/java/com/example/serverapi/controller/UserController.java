@@ -30,10 +30,10 @@ public class UserController {
     }
 
     @GetMapping("/getUser")
-    public ResponseEntity<?> getUsers(){
+    public ResponseEntity<?> getUsers(@RequestParam(required = false) String userId){
 
         try{
-            Optional<User> user = this.userService.getUserById(UUID.fromString("4ac1ef3b-8ce5-4675-9c12-8d583d37096d"));
+            Optional<User> user = this.userService.getUserById(UUID.fromString(userId));
             if(user.isPresent()){
                 UserDTO userDTO = dtoConverter.convertToUserDTO(user.get());
                 return new ResponseEntity<>(userDTO, HttpStatus.OK);
@@ -49,17 +49,8 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO){
 
         try{
-            UserDTO userDTO1 = new UserDTO();
-            userDTO1.setName("new name 3");
-            userDTO1.setUsername("new username 3");
-            userDTO1.setPassword("password 3");
-            userDTO1.setMail("mail 3");
-            userDTO1.setSeller(true);
-            userDTO1.setAdress("some street 3");
-            userDTO1.setDocument("13132124 3");
-            userDTO1.setPhoneNumber("113333444 3");
-            //userDTO1.setUserId(UUID.fromString("05b3a213-2523-4c83-a36c-3d3db8b5274a"));
-            User user = dtoConverter.convertToUser(userDTO1);
+
+            User user = dtoConverter.convertToUser(userDTO);
 
             userService.createOrUpdateUser(user);
             return ResponseEntity.ok(user);
@@ -73,9 +64,9 @@ public class UserController {
     }
 
     @DeleteMapping("/delete-user")
-    public ResponseEntity<String> deleteUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<String> deleteUser(@RequestBody String userId){
         try{
-            userService.deleteUser(UUID.fromString("a5170f50-f575-4725-82dd-20837a7265e3"));
+            userService.deleteUser(UUID.fromString(userId));
             return ResponseEntity.ok("Usuario eliminado correctamente");
         }
         catch(Exception e){

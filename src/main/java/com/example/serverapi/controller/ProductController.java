@@ -76,10 +76,10 @@ public class ProductController {
 
 
     @PostMapping("/create-product")
-    public ResponseEntity<String> addProduct() {
-        ProductDTO productDTO = new ProductDTO(0L,"Uno"," descripcion de producto",
+    public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO) {
+        /*ProductDTO productDTO = new ProductDTO(0L,"Uno"," descripcion de producto",
                 new CategoryDTO(3L,"Juego familiar"),
-                new PlayerDTO(3L,"2-4 jugadores"));
+                new PlayerDTO(3L,"2-4 jugadores"));*/
         Product product;
         try{
             product = dtoConverter.convertToProduct(productDTO);

@@ -21,6 +21,9 @@ public class Sale {
     @Column(name="sale_date")
     private LocalDateTime saleDate;
 
+    @Column(name="quantity_products")
+    private int quantityProducts;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private User user;
 
@@ -39,6 +42,16 @@ public class Sale {
             inverseJoinColumns = @JoinColumn(name="listing_id")
     )
     private List<Listing> listingsSales;
+
+
+    public void setListingsSales(Listing listing) {
+        listingsSales.add(listing);
+    }
+
+    public void setProductSales(Product product) {
+        productsSales.add(product);
+
+    }
 
 
 

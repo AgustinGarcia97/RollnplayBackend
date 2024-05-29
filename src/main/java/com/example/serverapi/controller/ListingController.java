@@ -88,7 +88,8 @@ public class ListingController {
     }
 
     @PostMapping("/create-listing")
-    public ResponseEntity<String> createListing(@RequestBody ListingDTO listingDTO1) {
+    public ResponseEntity<String> createListing(@RequestBody ListingDTO listingDTO) {
+        /*
         ListingDTO listingDTO = new ListingDTO( 0L,
                 "Vendo MONOPOLY",
                 "Descripcion de la venta de MONOPOLY",
@@ -101,6 +102,8 @@ public class ListingController {
                 true,
                 null
         );
+        */
+
         Listing listing;
         try{
             listingValidator.validateListing(listingDTO);

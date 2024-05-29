@@ -38,7 +38,7 @@ public class DTOConverter {
         userDTO.setPassword(user.getPassword());
         userDTO.setMail(user.getEmail());
         userDTO.setUsername(user.getUsername());
-        userDTO.setAdress(user.getAddress());
+        userDTO.setAddress(user.getAddress());
         userDTO.setDocument(userDTO.getDocument());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setUsername(user.getUsername());
@@ -124,6 +124,7 @@ public class DTOConverter {
         SaleDTO saleDTO = new SaleDTO();
         saleDTO.setSaleId(sale.getSaleId());
         saleDTO.setSaleDate(sale.getSaleDate());
+        /* // checxkear que retorne el DTO QUE CORRESPONDE A CIERTA VENTA (RELACION MUCHOS A MUCHOS ENTRE SALE Y  LISTING
         saleDTO.setListingsId(
                 sale.getListingsSales()
                         .stream()
@@ -136,6 +137,8 @@ public class DTOConverter {
                         .map(Product::getProductId)
                         .collect(Collectors.toList())
         );
+        */
+
         return saleDTO;
     }
 
@@ -209,7 +212,7 @@ public class DTOConverter {
         user.setPassword(userDTO.getPassword());
         user.setSeller(userDTO.isSeller());
         user.setName(userDTO.getName());
-        user.setAddress(userDTO.getAdress());
+        user.setAddress(userDTO.getAddress());
         user.setDocument(userDTO.getDocument());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         return user;
@@ -327,5 +330,17 @@ public class DTOConverter {
         purchase.setPurchaseDateTime(purchaseDTO.getPurchaseDateTime());
 
         return purchase;
+    }
+
+    public Sale convertToSale(SaleDTO saleDTO, ListingDTO listingDTO){
+        Sale sale = new Sale();
+        sale.setUser(userService.getUserById(listingDTO.getUserId()).get());
+        sale.setSaleDate(saleDTO.getSaleDate());
+        sale.setListingsSales(listingService.getListing(listingDTO.getListingId()).get());
+        sale.setProductSales(productService.findById(listingDTO.getProductDTO().getProductId()).get());
+        sale.setQuantityProducts(saleDTO.getProductsQuantity());
+
+        return sale;
+
     }
 }
