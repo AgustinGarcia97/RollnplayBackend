@@ -96,6 +96,27 @@ public class ProductController {
 
     }
 
+    @PutMapping("/update-product")
+    public ResponseEntity<String> updateProduct(@RequestBody ProductDTO productDTO) {
+        Product product;
+        try{
+            product = dtoConverter.convertToProduct(productDTO);
+            this.productValidator.validateProduct(product);
+        }
+        catch(ProductValidationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+            this.productService.updateProduct(product);
+            return new ResponseEntity<>("Producto actualizado correctamente", HttpStatus.OK);
+        }
+        catch(HibernateException e){
+            return new ResponseEntity<>("Producto no encontrado, o Id invalido", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @DeleteMapping("/delete-product")
     public ResponseEntity<String> deleteProduct(@RequestParam long productId){
         try{

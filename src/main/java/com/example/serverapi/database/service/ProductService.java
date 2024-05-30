@@ -63,6 +63,15 @@ public class ProductService {
 
 
     public Product updateProduct(Product product) {
+        Optional<Product> old = productRepository.findById(product.getProductId())
+        if (old.isPresent()) {
+            Product p = old.get();
+            p.setProductName(product.getProductName());
+            p.setProductDescription(product.getProductDescription());
+            p.setCategory(product.getCategory());
+            p.setPlayers(product.getPlayers());
+            return productRepository.save(p);
+        }
         return null;
     }
 
