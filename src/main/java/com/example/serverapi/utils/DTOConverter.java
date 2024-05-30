@@ -113,6 +113,7 @@ public class DTOConverter {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(product.getProductId());
         productDTO.setProductName(product.getProductName());
+        productDTO.setProductPrice(product.getProductPrice());
         productDTO.setProductDescription(product.getProductDescription());
         productDTO.setProductCategory(convertToCategoryDTO(product.getCategory()));
         productDTO.setProductPlayers(convertToPlayersDTO(product.getPlayers()));
@@ -229,6 +230,7 @@ public class DTOConverter {
             product.setProductId(productDTO.getProductId());
         }
         product.setProductName(productDTO.getProductName());
+        product.setProductPrice(productDTO.getProductPrice());
         product.setProductDescription(productDTO.getProductDescription());
         product.setCategory(convertToCategory(productDTO.getProductCategory()));
         product.setPlayers(convertToPlayers(productDTO.getProductPlayers()));

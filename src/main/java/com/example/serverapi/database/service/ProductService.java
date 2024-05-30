@@ -8,6 +8,8 @@ import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,7 +39,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-
     public Product createProduct(Product product) {
         Product p = null;
 
@@ -63,7 +64,8 @@ public class ProductService {
 
 
     public Product updateProduct(Product product) {
-        Optional<Product> old = productRepository.findById(product.getProductId())
+        Optional<Product> old = productRepository.findById(product.getProductId());
+
         if (old.isPresent()) {
             Product p = old.get();
             p.setProductName(product.getProductName());
@@ -72,6 +74,7 @@ public class ProductService {
             p.setPlayers(product.getPlayers());
             return productRepository.save(p);
         }
+
         return null;
     }
 
@@ -93,7 +96,18 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Page<Product> getPaginated(int page, int size) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
+        return productRepository.findAll(pageable);
+    }
 
-
-
+    public List<Product> getFiltered(String category, int minPrice, int maxPrice) {
+        List<Product> all = productRepository.findAll();
+        all.forEach((product) -> {
+            if (product.getProductPrice() < minPrice || product.getProductPrice() > maxPrice) {
+                all.remove(product);
+            }
+        });
+        return all;
+        }
 }
