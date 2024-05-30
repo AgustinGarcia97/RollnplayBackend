@@ -19,9 +19,9 @@ import java.util.UUID;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="user_id")
-    private UUID userId;
+    private int userId;
     @Column(unique=true, nullable=false)
     private String username;
     @Column(nullable=false)

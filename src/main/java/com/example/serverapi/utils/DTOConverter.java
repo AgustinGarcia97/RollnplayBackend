@@ -38,7 +38,7 @@ public class DTOConverter {
         userDTO.setPassword(user.getPassword());
         userDTO.setMail(user.getEmail());
         userDTO.setUsername(user.getUsername());
-        userDTO.setAdress(user.getAddress());
+        userDTO.setAddress(user.getAddress());
         userDTO.setDocument(userDTO.getDocument());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setUsername(user.getUsername());
@@ -209,7 +209,7 @@ public class DTOConverter {
         user.setPassword(userDTO.getPassword());
         user.setSeller(userDTO.isSeller());
         user.setName(userDTO.getName());
-        user.setAddress(userDTO.getAdress());
+        user.setAddress(userDTO.getAddress());
         user.setDocument(userDTO.getDocument());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         return user;

@@ -13,7 +13,7 @@ import java.util.UUID;
 public class PurchaseDTO {
     private Long purchaseId;
     private LocalDateTime purchaseDateTime;
-    private UUID userId;
+    private int userId;
     private List<Long> productIds;
     private List<Long> listingIds;
 

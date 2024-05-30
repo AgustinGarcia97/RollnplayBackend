@@ -24,15 +24,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> getUserById(UUID id) {
+    public Optional<User> getUserById(int id) {
         return userRepository.findById(id);
     }
 
-    public List<Listing> getListingById(UUID id){
+    public List<Listing> getListingById(int id){
        return userRepository.findById(id).get().getListings();
     }
 
-    public void deleteUser(UUID id) {
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
 }

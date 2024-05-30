@@ -12,11 +12,11 @@ import java.util.UUID;
 
 @NoArgsConstructor
 public class UserDTO {
-    private UUID userId;
+    private Integer userId;
     private String name;
     private String username;
     private String password;
-    private String adress;
+    private String address;
     private String phoneNumber;
     private String document;
     private String mail;

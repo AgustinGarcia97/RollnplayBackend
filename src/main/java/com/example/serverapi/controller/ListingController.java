@@ -72,7 +72,7 @@ public class ListingController {
 
     //testear -> trae todas las publicaciones del usuario
     @GetMapping("get-listing-user")
-    public ResponseEntity<?> getListingUser(@RequestParam UUID userId) {
+    public ResponseEntity<?> getListingUser(@RequestParam Integer userId) {
         try{
             if(userService.getUserById(userId) != null){
                 List<Listing> userListings = userService.getListingById(userId);
@@ -89,7 +89,7 @@ public class ListingController {
 
     @PostMapping("/create-listing")
     public ResponseEntity<String> createListing(@RequestBody ListingDTO listingDTO1) {
-        ListingDTO listingDTO = new ListingDTO( 0L,
+        /*ListingDTO listingDTO = new ListingDTO( 0L,
                 "Vendo MONOPOLY",
                 "Descripcion de la venta de MONOPOLY",
                 10,
@@ -100,11 +100,11 @@ public class ListingController {
                         new PlayerDTO(0L, "2 a 4 jugadores")),
                 true,
                 null
-        );
+        );*/
         Listing listing;
         try{
-            listingValidator.validateListing(listingDTO);
-            listing = dtoConverter.convertToListing(listingDTO);
+            listingValidator.validateListing(listingDTO1);
+            listing = dtoConverter.convertToListing(listingDTO1);
 
         }
         catch(ListingValidationException e){
@@ -115,9 +115,9 @@ public class ListingController {
     }
     //Redundante ya que create-listing tambien sirve para actualizar
     @PostMapping("update-listing")
-    public ResponseEntity<String> updateListing(@RequestBody ListingDTO listingDTO) {
+    public ResponseEntity<String> updateListing(@RequestBody ListingDTO listingDTO1) {
         try{
-
+/*
             ListingDTO listingDTO1 = new ListingDTO(1L,"nuevo titulo de venta random 3","nueva descripcion de la venta random2",39,999.99,null,
                     new ProductDTO(1L,"Clue", "", new CategoryDTO(0L,"familiar"), new PlayerDTO(0L, "2 a 4 jugadores")),
                     true,
@@ -125,7 +125,7 @@ public class ListingController {
                             new ImageDTO("url3", 1L),
                             new ImageDTO("url5", 1L),
                             new ImageDTO("url6",1L)
-            ));
+            ));*/
             listingValidator.validateListing(listingDTO1);
             Listing listing = dtoConverter.convertToListing(listingDTO1);
             listingService.createOrUpdateListing(listing);

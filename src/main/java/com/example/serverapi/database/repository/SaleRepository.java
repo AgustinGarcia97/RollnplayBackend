@@ -1,12 +1,10 @@
 package com.example.serverapi.database.repository;
 
-import com.example.serverapi.model.User;
+import com.example.serverapi.model.Sale;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface SaleRepository extends JpaRepository<Sale, Long> {
 
 }

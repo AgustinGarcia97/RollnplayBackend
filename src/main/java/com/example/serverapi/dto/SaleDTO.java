@@ -12,7 +12,7 @@ import java.util.UUID;
 public class SaleDTO {
     private Long saleId;
     private LocalDateTime saleDate;
-    private UUID userId;
+    private int userId;
     private List<Long> productIds;
     private List<Long> listingsId;
 
