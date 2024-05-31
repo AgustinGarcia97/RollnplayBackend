@@ -16,15 +16,14 @@ public class ProductDTO {
     private String productDescription;
     private CategoryDTO productCategory;
     private PlayerDTO productPlayers;
+    private double productPrice;
 
-    public ProductDTO(long productId,String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers) {
+    public ProductDTO(long productId,String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers, long productPrice) {
         this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
         this.productCategory = productCategory;
         this.productPlayers = productPlayers;
-    }
-
-
-
+        this.productPrice = productPrice;
+    }   
 }

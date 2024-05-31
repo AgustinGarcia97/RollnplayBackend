@@ -43,7 +43,8 @@ public class ProductController {
                         product.get().getProductName(),
                         product.get().getProductDescription(),
                         dtoConverter.convertToCategoryDTO(product.get().getCategory()),
-                        dtoConverter.convertToPlayersDTO(product.get().getPlayers())
+                        dtoConverter.convertToPlayersDTO(product.get().getPlayers()),
+                        product.get().getProductPrice()
                         );
                 return new ResponseEntity<>(productDTO, HttpStatus.OK);
             }
