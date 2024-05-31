@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SaleProduct {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="sale_product_id")
+    private long saleProductId;
+
     @Column(name="sale_id")
     private long saleId;
 

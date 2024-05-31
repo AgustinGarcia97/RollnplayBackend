@@ -15,8 +15,6 @@ public class SaleProductService {
         saleProduct.setSaleId(sale_id);
         saleProduct.setProductId(product_id);
         saleProduct.setQuantity(quantity);
-        System.out.println("sale product: " + saleProduct.toString());
-
         saleProductRepository.save(saleProduct);
     }
 
