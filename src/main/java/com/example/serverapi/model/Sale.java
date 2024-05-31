@@ -21,7 +21,7 @@ public class Sale {
     @Column(name="sale_date")
     private LocalDateTime saleDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private User user;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -1,18 +1,21 @@
 package com.example.serverapi.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="user")
 @Data
@@ -66,8 +69,7 @@ public class User implements Serializable {
 
     }
 
-    public User() {
-    }
+
 
 
 

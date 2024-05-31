@@ -8,9 +8,7 @@ import com.example.serverapi.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class SaleService {
@@ -19,24 +17,40 @@ public class SaleService {
 
     @Autowired private UserService userService;
 
-    public Sale createSale(Integer user_id) {
+    public void createSale(Integer user_id) {
         Sale sale = new Sale();
 
         Optional<User> user = userService.getUserById(user_id);
         if (user.isPresent()) {
-            System.out.println(user.get().getName());
-            sale.setUser(user.get());
-            sale.setSaleDate(java.time.LocalDateTime.now());
-            return saleRepository.save(sale);
+            // Verificamos si no existe ya un carrito para el usuario
+            Integer count = this.countSales(user_id);
+            if (count == 0) {
+                sale.setUser(user.get());
+                sale.setSaleDate(java.time.LocalDateTime.now());
+                saleRepository.save(sale);
+            }
         } else {
             throw new UserNotFoundException("User not found");
         }
+    }
+
+    public Integer countSales(Integer user_id) {
+        return saleRepository.contarVentas(user_id);
     }
 
     public Sale findById(Long id) {
         Optional<Sale> sale = saleRepository.findById(id);
         if (sale.isPresent()) {
             return sale.get();
+        } else {
+            throw new SaleNotFoundException("Sale not found");
+        }
+    }
+
+    public void deleteSale(Integer idInt) {
+        Optional<Sale> sale = saleRepository.findByUser(idInt);
+        if (sale.isPresent()) {
+            saleRepository.delete(sale.get());
         } else {
             throw new SaleNotFoundException("Sale not found");
         }

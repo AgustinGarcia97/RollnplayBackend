@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="sale_product")
+@Table(name="sale_product", uniqueConstraints = @UniqueConstraint(columnNames = {"sale_id", "product_id"}))
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +15,6 @@ public class SaleProduct {
     @Column(name="sale_id")
     private long saleId;
 
-    @Id
     @Column(name="product_id")
     private Long productId;
 
