@@ -20,4 +20,12 @@ public class SaleProductService {
         saleProductRepository.save(saleProduct);
     }
 
+    public void updateProduct(Integer saleId, Long productId, Integer quantity) {
+        saleProductRepository.updateProduct(saleId, productId, quantity);
+    }
+
+    public void noQuantity(Integer saleId, Long productId) {
+        saleProductRepository.deleteSaleProductBySaleAndProduct(saleId, productId);
+    }
+
 }
