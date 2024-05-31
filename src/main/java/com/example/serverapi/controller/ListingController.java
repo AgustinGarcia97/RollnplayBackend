@@ -32,8 +32,10 @@ public class ListingController {
 
     @Autowired
     private ListingValidator listingValidator;
+
     @Autowired
     private ImageService imageService;
+
     @Autowired
     private UserService userService;
 

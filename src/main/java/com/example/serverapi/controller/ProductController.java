@@ -38,7 +38,6 @@ public class ProductController {
         try{
             Optional<Product> product = productService.findById(id);
             if(product.isPresent()) {
-                System.out.println("hola");
                 ProductDTO productDTO = new ProductDTO(
                         product.get().getProductId(),
                         product.get().getProductName(),
