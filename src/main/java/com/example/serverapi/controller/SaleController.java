@@ -6,15 +6,15 @@ import com.example.serverapi.dto.ListingDTO;
 import com.example.serverapi.dto.SaleDTO;
 import com.example.serverapi.model.Sale;
 import com.example.serverapi.utils.DTOConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.util.Map;
 
 @RestController
 public class SaleController {
@@ -28,10 +28,16 @@ public class SaleController {
     @Autowired
     private DTOConverter dtoConverter;
 
+
+
+
     //TESTEAR
     @PostMapping("/buy-items")
-    public ResponseEntity<String> buyItems(@RequestBody SaleDTO saleDTO,@RequestBody ListingDTO listingDTO) {
+    public ResponseEntity<String> buyItems(@RequestBody Map<String, Object> request) throws Exception {
+
         try{
+            SaleDTO saleDTO = new ObjectMapper().convertValue(request.get("saleDTO"), SaleDTO.class);
+            ListingDTO listingDTO = new ObjectMapper().convertValue(request.get("listingDTO"), ListingDTO.class);
             Sale sale = dtoConverter.convertToSale(saleDTO, listingDTO);
             if(sale != null){
                 listingDTO.setStock(listingDTO.getStock() - saleDTO.getProductsQuantity()); // actualizo stock

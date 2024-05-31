@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,11 +45,18 @@ public class Sale {
     private List<Listing> listingsSales;
 
 
+
     public void setListingsSales(Listing listing) {
+        if(listingsSales == null) {
+            listingsSales = new ArrayList<>();
+        }
         listingsSales.add(listing);
     }
 
     public void setProductSales(Product product) {
+        if(productsSales == null) {
+            productsSales = new ArrayList<>();
+        }
         productsSales.add(product);
 
     }

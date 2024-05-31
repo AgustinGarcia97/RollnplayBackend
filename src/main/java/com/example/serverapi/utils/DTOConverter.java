@@ -9,6 +9,7 @@ import com.example.serverapi.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -259,6 +260,7 @@ public class DTOConverter {
         if(u.isPresent()){
             sale.setUser(u.get());
         }
+        sale.setListingsSales(listingService.getListing(saleDTO.getListingsId()).get());
 
         return sale;
     }
@@ -338,8 +340,9 @@ public class DTOConverter {
     public Sale convertToSale(SaleDTO saleDTO, ListingDTO listingDTO){
         Sale sale = new Sale();
         sale.setUser(userService.getUserById(listingDTO.getUserId()).get());
-        sale.setSaleDate(saleDTO.getSaleDate());
-        sale.setListingsSales(listingService.getListing(listingDTO.getListingId()).get());
+        sale.setSaleDate(LocalDateTime.now());
+        sale.setListingsSales(convertToListing(listingDTO));
+
         sale.setProductSales(productService.findById(listingDTO.getProductDTO().getProductId()).get());
         sale.setQuantityProducts(saleDTO.getProductsQuantity());
 
