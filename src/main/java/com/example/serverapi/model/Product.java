@@ -41,7 +41,7 @@ public class Product implements Serializable {
     @JsonManagedReference
     private List<Listing> listings;
 
-    @ManyToOne( fetch = FetchType.LAZY)
+    @ManyToOne( fetch = FetchType.LAZY,cascade =CascadeType.MERGE)
     @JsonManagedReference
     private Player players;
 

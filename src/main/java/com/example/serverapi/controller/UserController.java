@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete-user")
-    public ResponseEntity<String> deleteUser(@RequestBody String userId){
+    public ResponseEntity<String> deleteUser(@RequestParam String userId){
         try{
             userService.deleteUser(UUID.fromString(userId));
             return ResponseEntity.ok("Usuario eliminado correctamente");

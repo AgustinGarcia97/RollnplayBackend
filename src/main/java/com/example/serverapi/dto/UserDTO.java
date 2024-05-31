@@ -25,5 +25,9 @@ public class UserDTO {
     private List<PurchaseDTO> purchasesDTO;
     private boolean isSeller;
 
+    public boolean getIsSeller(){
+        return this.isSeller;
+    }
+
 
 }

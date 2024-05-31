@@ -72,7 +72,7 @@ public class ListingController {
 
     }
 
-    //testear -> trae todas las publicaciones del usuario
+
     @GetMapping("get-listing-user")
     public ResponseEntity<?> getListingUser(@RequestParam UUID userId) {
         try{
@@ -122,17 +122,17 @@ public class ListingController {
     @PostMapping("update-listing")
     public ResponseEntity<String> updateListing(@RequestBody ListingDTO listingDTO) {
         try{
-
+/*
             ListingDTO listingDTO1 = new ListingDTO(1L,"nuevo titulo de venta random 3","nueva descripcion de la venta random2",39,999.99,null,
-                    new ProductDTO(1L,"Clue", "", new CategoryDTO(0L,"familiar"), new PlayerDTO(0L, "2 a 4 jugadores")),
+                    new ProductDTO(1L,"Clue", "", new CategoryDTO(0L,"familiar"), new PlayerDTO(0L, "2 a 4 jugadores"), 9),
                     true,
                     Arrays.asList(
                             new ImageDTO("url3", 1L),
                             new ImageDTO("url5", 1L),
                             new ImageDTO("url6",1L)
-            ));
-            listingValidator.validateListing(listingDTO1);
-            Listing listing = dtoConverter.convertToListing(listingDTO1);
+            ));*/
+            listingValidator.validateListing(listingDTO);
+            Listing listing = dtoConverter.convertToListing(listingDTO);
             listingService.createOrUpdateListing(listing);
 
             return new ResponseEntity<>("Publicacion creada correctamente", HttpStatus.CREATED);

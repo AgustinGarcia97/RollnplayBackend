@@ -79,5 +79,9 @@ public class User implements Serializable {
         isSeller = seller;
     }
 
+    public boolean getIsSeller(){
+        return this.isSeller;
+    }
+
 
 }

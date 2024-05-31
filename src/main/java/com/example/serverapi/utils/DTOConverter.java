@@ -39,9 +39,10 @@ public class DTOConverter {
         userDTO.setMail(user.getEmail());
         userDTO.setUsername(user.getUsername());
         userDTO.setAddress(user.getAddress());
-        userDTO.setDocument(userDTO.getDocument());
+        userDTO.setDocument(user.getDocument());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setUsername(user.getUsername());
+        userDTO.setSeller(user.getIsSeller());
         userDTO.setListingsDTO(user.getListings()
                 .stream()
                 .map(this::convertToListingDTO)
@@ -65,7 +66,7 @@ public class DTOConverter {
     public ListingDTO convertToListingDTO(Listing listing) {
         ListingDTO listingDTO = new ListingDTO();
         listingDTO.setListingId(listing.getListingId());
-        //listingDTO.setUserId(listing.getUser().getUserId()); descomentar cuando se creen nuevos usuarios
+        listingDTO.setUserId(listing.getUser().getUserId());
         listingDTO.setTitle(listing.getTitle());
         listingDTO.setDescription(listing.getDescription());
         listingDTO.setPrice(listing.getPrice());
@@ -211,7 +212,7 @@ public class DTOConverter {
         user.setEmail(userDTO.getMail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        user.setSeller(userDTO.isSeller());
+        user.setSeller(userDTO.getIsSeller());
         user.setName(userDTO.getName());
         user.setAddress(userDTO.getAddress());
         user.setDocument(userDTO.getDocument());
