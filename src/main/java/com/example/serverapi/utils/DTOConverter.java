@@ -343,7 +343,7 @@ public class DTOConverter {
         sale.setSaleDate(LocalDateTime.now());
         sale.setListingsSales(convertToListing(listingDTO));
 
-        sale.setProductSales(productService.findById(listingDTO.getProductDTO().getProductId()).get());
+        //sale.setProductSales(productService.findById(listingDTO.getProductDTO().getProductId()).get());
         sale.setQuantityProducts(saleDTO.getProductsQuantity());
 
         return sale;
