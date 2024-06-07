@@ -28,7 +28,7 @@ public class Product implements Serializable {
     @Column(name="product_price",nullable=false)
     private double productPrice;
 
-    @ManyToOne(cascade =CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Category category;
 
     @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
@@ -41,7 +41,7 @@ public class Product implements Serializable {
     @JsonManagedReference
     private List<Listing> listings;
 
-    @ManyToOne( fetch = FetchType.LAZY,cascade =CascadeType.MERGE)
+    @ManyToOne( fetch = FetchType.LAZY,cascade ={CascadeType.PERSIST, CascadeType.MERGE})
     @JsonManagedReference
     private Player players;
 
