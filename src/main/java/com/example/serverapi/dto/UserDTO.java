@@ -24,6 +24,7 @@ public class UserDTO {
     private List<SaleDTO> salesDTO;
     private List<PurchaseDTO> purchasesDTO;
     private boolean isSeller;
+    private String role;
 
     public boolean getIsSeller(){
         return this.isSeller;

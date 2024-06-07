@@ -38,6 +38,8 @@ public class User implements Serializable {
     private boolean isSeller;
     @Column(nullable=false)
     private String document;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JsonManagedReference
