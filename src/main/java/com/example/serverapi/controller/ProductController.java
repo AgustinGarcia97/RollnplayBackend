@@ -77,21 +77,14 @@ public class ProductController {
 
     @PostMapping("/create-product")
     public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO) {
-        /*ProductDTO productDTO = new ProductDTO(0L,"Uno"," descripcion de producto",
-                new CategoryDTO(3L,"Juego familiar"),
-                new PlayerDTO(3L,"2-4 jugadores"));*/
-        Product product;
         try{
-            product = dtoConverter.convertToProduct(productDTO);
-
-            this.productValidator.validateProduct(product);
-
+            System.out.println(productDTO);
+            this.productService.createOrUpdateProduct(productDTO);
         }
         catch(ProductValidationException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        this.productService.createProduct(product);
         return new ResponseEntity<>("Producto creado correctamente", HttpStatus.CREATED);
 
     }

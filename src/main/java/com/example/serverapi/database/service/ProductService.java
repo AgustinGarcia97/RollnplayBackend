@@ -4,12 +4,16 @@ import com.example.serverapi.database.repository.CategoryRepository;
 import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
 import com.example.serverapi.dto.ProductDTO;
+import com.example.serverapi.exceptions.CustomDatabaseException;
 import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 import com.example.serverapi.utils.Converter.ProductConverter;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +40,8 @@ public class ProductService {
     @Autowired
     ProductConverter productConverter;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public Product findByName(String name) {
         return productRepository.findByProductName(name);
     }
@@ -47,13 +53,15 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    @Transactional
     public Product createOrUpdateProduct(ProductDTO productDTO) {
         Product product = productConverter.convertToEntity(productDTO);
         try{
              productRepository.save(product);
         }
         catch(HibernateException e){
-            System.out.println(e);
+            logger.error("Error saving product: {}",product, e);
+            throw new CustomDatabaseException("Error saving product:",e);
         }
 
         return product;
