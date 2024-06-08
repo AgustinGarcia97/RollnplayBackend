@@ -21,10 +21,11 @@ public class ListingDTO {
     private String description;
     private double stock;
     private double price;
-    private UUID userId;
+    private UserDTO userDTO;
     private ProductDTO productDTO;
     private boolean listingState;
     private List<ImageDTO> images;
+
     public boolean getListingState() {
         return listingState;
     }

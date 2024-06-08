@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -40,6 +41,20 @@ public class Purchase {
             inverseJoinColumns = @JoinColumn(name="listing_id")
     )
     private List<Listing> listingsPurchases;
+
+    public void setListingToList(Listing listing){
+        if(listingsPurchases == null){
+            listingsPurchases = new ArrayList<>();
+        }
+        listingsPurchases.add(listing);
+    }
+
+    public void setProductToList(Product product){
+        if(productsPurchases == null){
+            productsPurchases = new ArrayList<>();
+        }
+        productsPurchases.add(product);
+    }
 
 
 

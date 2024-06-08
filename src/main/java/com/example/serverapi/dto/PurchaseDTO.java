@@ -13,8 +13,12 @@ import java.util.UUID;
 public class PurchaseDTO {
     private Long purchaseId;
     private LocalDateTime purchaseDateTime;
-    private UUID userId;
-    private List<Long> productIds;
-    private List<Long> listingIds;
+    private UUID seller;
+    private ProductDTO productDTO;
+    private ListingDTO ListingDTO;
+
+    private void setListingDTO(ListingDTO listingDTO){
+        this.ListingDTO = listingDTO;
+    }
 
 }

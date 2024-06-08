@@ -13,8 +13,8 @@ public class SaleDTO {
     private Long saleId;
     private LocalDateTime saleDate;
     private UUID userId;
-    private Long productIds;
-    private Long listingsId;
+    private ProductDTO productDT0;
+    private ListingDTO listingDTO;
     private int productsQuantity;
 
 }

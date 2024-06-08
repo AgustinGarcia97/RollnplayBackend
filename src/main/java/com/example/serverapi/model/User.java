@@ -71,7 +71,26 @@ public class User implements Serializable {
     public User() {
     }
 
+    public void setListings(List<Listing> listings) {
+        if(this.listings == null) {
+            listings = new ArrayList<>();
+        }
+        this.listings = listings;
+    }
 
+    public void setPurchases(List<Purchase> purchases) {
+        if(this.purchases == null) {
+            purchases = new ArrayList<>();
+        }
+        this.purchases = purchases;
+    }
+
+    public void setSales(List<Sale> sales) {
+        if(this.sales == null) {
+            sales = new ArrayList<>();
+        }
+        this.sales = sales;
+    }
 
     public boolean isSeller() {
         return isSeller;
