@@ -1,6 +1,9 @@
 package com.example.serverapi.controller;
 import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.UserDTO;
+import com.example.serverapi.exceptions.errorResponse.ErrorResponse;
+import com.example.serverapi.exceptions.userExceptions.UserConversionException;
+import com.example.serverapi.exceptions.userExceptions.UserPersistenceException;
 import com.example.serverapi.utils.DTOConverter;
 import org.aspectj.apache.bcel.generic.RET;
 import org.slf4j.Logger;
@@ -30,7 +33,7 @@ public class UserController {
     public UserController(UserService userService){
         this.userService = userService;
     }
-
+/*
     @GetMapping("/getUser")
     public ResponseEntity<?> getUsers(@RequestParam(required = false) String userId){
 
@@ -62,23 +65,30 @@ public class UserController {
         }
     }
 
+ */
+
 
     @PostMapping("/create-user")
-    public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO){
-
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
         try{
+            User user = userService.createOrUpdateUser(userDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente: "+user.toString());
 
-            User user = dtoConverter.convertToUser(userDTO);
+        } catch(UserConversionException e){
+            logger.error("Error converting UserDTO to User entity: {} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Conversion error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 
-            userService.createOrUpdateUser(user);
-            return ResponseEntity.ok(user);
+        } catch(UserPersistenceException e){
+            logger.error("Error persisnting User entity:{} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Persistence error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        }catch(Exception e){
+            logger.error("Unexpected error:{} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Unexpected error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse +" DTO: "+ userDTO.toString());
         }
-        catch(Exception e){
-            logger.error(e.getMessage());
-
-        }
-        return ResponseEntity.badRequest().build();
-
     }
 
     @DeleteMapping("/delete-user")
