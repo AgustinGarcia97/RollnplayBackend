@@ -23,6 +23,7 @@ public class UserDTO {
     private List<ListingDTO> listingsDTO;
     private List<SaleDTO> salesDTO;
     private List<PurchaseDTO> purchasesDTO;
+
     private boolean isSeller;
     private String role;
 

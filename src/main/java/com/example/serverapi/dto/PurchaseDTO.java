@@ -1,5 +1,6 @@
 package com.example.serverapi.dto;
 
+import com.example.serverapi.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,8 @@ import java.util.UUID;
 public class PurchaseDTO {
     private Long purchaseId;
     private LocalDateTime purchaseDateTime;
-    private UUID seller;
+    private UserDTO seller;
+    private UUID sellerId;
     private ProductDTO productDTO;
     private ListingDTO ListingDTO;
 

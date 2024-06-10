@@ -22,23 +22,23 @@ public class Listing implements Serializable {
     private double stock;
     private double price;
     private boolean state;
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY,cascade =  {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name="user_id")
     @JsonBackReference
     private User user;
 
-    @ManyToOne(fetch =  FetchType.EAGER,cascade =  CascadeType.MERGE)
+    @ManyToOne(fetch =  FetchType.LAZY,cascade =  {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name="product_id")
     @JsonBackReference
     private Product product;
 
-    @ManyToMany(mappedBy="listingsPurchases", fetch = FetchType.LAZY, cascade =  CascadeType.MERGE )
+    @ManyToMany(mappedBy="listingsPurchases", fetch = FetchType.LAZY,cascade =  {CascadeType.MERGE, CascadeType.PERSIST} )
     private List<Purchase> purchases;
 
-    @ManyToMany(mappedBy="listingsSales", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy="listingsSales", fetch = FetchType.LAZY, cascade =  {CascadeType.MERGE, CascadeType.PERSIST})
     private List<Sale> sales;
 
-    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Image> images = new ArrayList<>();
 
     public Listing() {

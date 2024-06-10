@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,5 +28,12 @@ public class Player implements Serializable {
 
     public Player(String numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
+    }
+
+    public void setProductToList(Product product){
+        if(this.product == null){
+            this.product = new ArrayList<>();
+        }
+        this.product.add(product);
     }
 }

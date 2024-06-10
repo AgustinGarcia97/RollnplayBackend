@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,7 +23,6 @@ public class Category implements Serializable {
 
     @OneToMany(
             mappedBy="category",
-            cascade=CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     private List<Product> products;
@@ -33,5 +33,12 @@ public class Category implements Serializable {
     }
 
     public Category() {
+    }
+
+    public void setProductToList(Product product) {
+        if(this.products == null) {
+            this.products = new ArrayList<>();
+        }
+        this.products.add(product);
     }
 }

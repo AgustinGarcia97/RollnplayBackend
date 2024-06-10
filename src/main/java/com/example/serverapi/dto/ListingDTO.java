@@ -16,12 +16,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListingDTO {
-    private long listingId;
+    private Long listingId;
     private String title;
     private String description;
     private double stock;
     private double price;
     private UserDTO userDTO;
+    private UUID userId;
     private ProductDTO productDTO;
     private boolean listingState;
     private List<ImageDTO> images;
