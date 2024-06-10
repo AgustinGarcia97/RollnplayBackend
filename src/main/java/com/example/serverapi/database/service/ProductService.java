@@ -8,8 +8,10 @@ import com.example.serverapi.exceptions.CustomDatabaseException;
 import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
-import com.example.serverapi.utils.Converter.ProductConverter;
+
+import com.example.serverapi.utils.converter.DtoAssembler;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
@@ -25,39 +27,100 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    @Autowired
+
+    private final PlayerRepository playerRepository;
     private ProductRepository productRepository;
 
-    @Autowired
-    private PlayerRepository playerRepository;
-
-    @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
+
+    private final PlayerService playerService;
+
+    private DtoAssembler dtoAssembler;
+
+
+
+
 
     @Autowired
-    ProductConverter productConverter;
+    public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
+                          CategoryService categoryService, PlayerService playerService, PlayerRepository playerRepository) {
+
+        this.productRepository = productRepository;
+        this.dtoAssembler = dtoAssembler;
+        this.categoryService = categoryService;
+        this.playerService = playerService;
+        this.playerRepository = playerRepository;
+    }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Product findByName(String name) {
-        return productRepository.findByProductName(name);
+    public Optional<ProductDTO> findByIdDTO(long id) {
+        ProductDTO productDTO = null;
+        try {
+            Optional<Product> existence = productRepository.findById(id);
+            if (existence.isPresent()) {
+                productDTO = dtoAssembler.getProductDTO(existence.get());
+                productDTO.setProductCategory(dtoAssembler.getCategoryDTO(existence.get().getCategory()));
+                productDTO.setProductPlayers(dtoAssembler.getPlayerDTO(existence.get().getPlayers()));
+            }
+            else {
+                throw new EntityNotFoundException("Product with id " + id + " not found");
+            }
+
+        }
+        catch(EntityNotFoundException e){
+            return Optional.empty();
+        }
+        return Optional.ofNullable(productDTO);
+
     }
 
-    public Product findById(Long id) {return productRepository.findById(id).get();}
-
-
-    public Optional<Product> findById(long id) {
+    public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 
+
     @Transactional
     public Product createOrUpdateProduct(ProductDTO productDTO) {
-        Product product = productConverter.convertToEntity(productDTO);
+        // en caso de que no exista player o category deberia persistirla antes en la db
+        Product product = null;
+        Category category = null;
+        Player player = null;
+
         try{
-             productRepository.save(product);
+            if(productDTO.getProductId() != null){
+                Optional<Product> productRequest = findById(productDTO.getProductId());
+                if(productRequest.isPresent()){
+                    product = productRequest.get();
+                }
+            }
+            else{
+                if(productDTO.getProductCategory().getCategoryId() == null){
+                    category = categoryService.createOrUpdateCategory(productDTO.getProductCategory());
+                } else {
+                    Optional<Category> existence = categoryService.getCategoryById(productDTO.getProductCategory().getCategoryId());
+                    if(existence.isPresent()){
+                        category = existence.get();
+                    }
+                }
+
+                if(productDTO.getProductPlayers().getPlayerId() == null){
+                    player = playerService.createOrUpdatePlayer(productDTO.getProductPlayers());
+                } else {
+                    Optional<Player> existence = playerService.getPlayerById(productDTO.getProductPlayers().getPlayerId());
+                    if(existence.isPresent()){
+                        player = existence.get();
+                    }
+                }
+                product.setCategory(category);
+                product.setPlayers(player);
+            }
+
+            product = dtoAssembler.getProductEntity(productDTO);
+            product = productRepository.save(product);
+
         }
         catch(HibernateException e){
             logger.error("Error saving product: {}",product, e);
@@ -68,51 +131,11 @@ public class ProductService {
     }
 
 
-    public Product updateProduct(Product product) {
-        Optional<Product> old = productRepository.findById(product.getProductId());
-
-        if (old.isPresent()) {
-            Product p = old.get();
-            p.setProductName(product.getProductName());
-            p.setProductDescription(product.getProductDescription());
-            p.setCategory(product.getCategory());
-            p.setPlayers(product.getPlayers());
-            return productRepository.save(p);
-        }
-
-        return null;
+    @Transactional
+    public void deleteProductById(Long id) {
+        productRepository.deleteById(id);
     }
 
 
-    public void deleteProduct(long id) {
-            productRepository.deleteById(id);
-    }
 
-
-    public Boolean existsProduct(long id) {
-        return findById(id) != null;
-    }
-
-    public Product getProductByProductName(String productName) {
-        return productRepository.findByProductName(productName);
-    }
-
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
-    public Page<Product> getPaginated(int page, int size) {
-        Pageable pageable = Pageable.ofSize(size).withPage(page);
-        return productRepository.findAll(pageable);
-    }
-
-    public List<Product> getFiltered(String category, int minPrice, int maxPrice) {
-        List<Product> all = productRepository.findAll();
-        all.forEach((product) -> {
-            if (product.getProductPrice() < minPrice || product.getProductPrice() > maxPrice) {
-                all.remove(product);
-            }
-        });
-        return all;
-        }
 }
