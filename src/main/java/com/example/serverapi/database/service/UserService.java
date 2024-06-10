@@ -7,7 +7,8 @@ import com.example.serverapi.exceptions.userExceptions.UserConversionException;
 import com.example.serverapi.exceptions.userExceptions.UserPersistenceException;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.model.User;
-import com.example.serverapi.utils.Converter.UserConverter;
+import com.example.serverapi.utils.converter.DtoAssembler;
+import com.example.serverapi.utils.converter.UserConverter;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
 
+    private final DtoAssembler dtoAssembler;
     private UserRepository userRepository;
 
     private UserConverter userConverter;
+
+    private UserService(UserRepository userRepository, UserConverter userConverter, DtoAssembler dtoAssembler) {
+        this.userRepository = userRepository;
+        this.userConverter = userConverter;
+        this.dtoAssembler = dtoAssembler;
+    }
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -53,6 +62,30 @@ public class UserService {
 
     public Optional<User> getUserById(UUID id) {
         return userRepository.findById(id);
+    }
+
+    public UserDTO getUserDTOById(UUID id) {
+        UserDTO userDTO = null;
+        try{
+            Optional<User> user = userRepository.findById(id);
+
+            if(user.isPresent()) {
+                userDTO = dtoAssembler.getUserDTO(user.get());
+
+                if(user.get().getListings() != null){
+                    userDTO.setListingsDTO(
+                            user.get()
+                                    .getListings()
+                                    .stream()
+                                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                                    .collect(Collectors.toList()));
+                }
+
+            }
+        }catch (EntityNotFoundException e) {
+            throw new UserPersistenceException("Entity not found", e);
+        }
+        return userDTO;
     }
 
     public List<Listing> getListingById(UUID id){
