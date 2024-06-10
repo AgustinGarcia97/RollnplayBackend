@@ -8,6 +8,7 @@ import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 
+import com.example.serverapi.utils.converter.DtoAssembler;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

@@ -2,38 +2,21 @@ package com.example.serverapi.controller;
 
 
 import com.example.serverapi.database.service.ProductService;
-import com.example.serverapi.dto.CategoryDTO;
-import com.example.serverapi.dto.PlayerDTO;
 import com.example.serverapi.dto.ProductDTO;
-import com.example.serverapi.exceptions.ProductValidationException;
 import com.example.serverapi.exceptions.userExceptions.UserConversionException;
-import com.example.serverapi.exceptions.userExceptions.UserNotFoundException;
-import com.example.serverapi.model.Category;
-import com.example.serverapi.model.Player;
-import com.example.serverapi.model.Product;
-import com.example.serverapi.utils.DTOConverter;
-import com.example.serverapi.validator.ProductValidator;
-import jakarta.transaction.Transactional;
-import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {
 
 
     private ProductService productService;
-    @Autowired
-    private ProductValidator productValidator;
 
-    @Autowired
-    private DTOConverter dtoConverter;
 
     @Autowired
     public ProductController(ProductService productService) {

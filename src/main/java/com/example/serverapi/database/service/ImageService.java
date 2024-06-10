@@ -5,6 +5,7 @@ import com.example.serverapi.database.repository.ListingRepository;
 import com.example.serverapi.dto.ImageDTO;
 import com.example.serverapi.model.Image;
 import com.example.serverapi.model.Listing;
+import com.example.serverapi.utils.converter.DtoAssembler;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

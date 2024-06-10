@@ -10,6 +10,7 @@ import com.example.serverapi.model.Image;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.model.Product;
 import com.example.serverapi.model.User;
+import com.example.serverapi.utils.converter.DtoAssembler;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class ListingService {
         this.userService = userService;
         this.imageService = imageService;
     }
-    //CHECKEAR QUE NO HAYA REDUNDANCIA DE IMAGENES
+
     @Transactional
     public Optional<?> createOrUpdateListing(ListingDTO listingDTO) {
         Listing listing = null;
@@ -60,7 +61,7 @@ public class ListingService {
 
 
 
-            Optional<User> user = userService.getUserByUUID(listingDTO.getUserId());
+            Optional<User> user = userService.getUserById(listingDTO.getUserId());
             if (user.isPresent()) {
                 listing.setUser(user.get());
             } else {
