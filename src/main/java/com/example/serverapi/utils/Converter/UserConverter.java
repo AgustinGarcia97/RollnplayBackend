@@ -1,66 +1,112 @@
-package com.example.serverapi.utils.Converter;
+package com.example.serverapi.utils.converter;
 
 import com.example.serverapi.dto.UserDTO;
+import com.example.serverapi.exceptions.dtoExceptions.ConversionException;
 import com.example.serverapi.model.Role;
 import com.example.serverapi.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
-
 
 @Component
 public class UserConverter {
 
 
-    private ListingConverter listingConverter;
+    public User convertToEntity(UserDTO userDTO) {
+        User user = null;
+        try {
+            user = new User();
+
+            if (userDTO.getUserId() != null) {
+                user.setUserId(userDTO.getUserId());
+            }
+
+            user.setName(userDTO.getName());
+            user.setUsername(userDTO.getUsername());
+            user.setPassword(userDTO.getPassword());
+            user.setEmail(userDTO.getMail());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
+            user.setAddress(userDTO.getAddress());
+            user.setDocument(userDTO.getDocument());
+            user.setRole(Role.valueOf(userDTO.getRole()));
 
 
-    private PurchaseConverter purchaseConverter;
+        } catch (IllegalArgumentException e) {
+            System.out.println("values cannot be null:" + e.getMessage());
 
+        } catch (ConversionException e) {
+            System.out.println("conversor error:" + e.getMessage());
 
-    private SaleConverter saleConverter;
+        } catch (Exception e) {
+            System.out.println("error:" + e.getMessage());
 
-
-
-    public User convertToEntity(UserDTO userDTO){
-        User user = new User();
-        if(userDTO.getUserId() != null){
-            user.setUserId(userDTO.getUserId());
+        } finally {
+            return user;
         }
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
-        user.setAddress(userDTO.getAddress());
-        user.setEmail(userDTO.getMail());
-        user.setName(userDTO.getName());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setDocument(userDTO.getDocument());
-        user.setRole(Role.valueOf(userDTO.getRole()));
-
-        if(userDTO.getListingsDTO() != null){
-            user.setListings(userDTO
-                            .getListingsDTO()
-                            .stream()
-                            .map(listingDTO -> listingConverter.convertToEntity(listingDTO))
-                            .collect(Collectors.toList())
-            );
-        }
-
-        if(userDTO.getPurchasesDTO() != null) {
-            user.setPurchases(userDTO
-                    .getPurchasesDTO()
-                    .stream()
-                    .map(purchaseDTO -> purchaseConverter.convertToEntity(purchaseDTO))
-                    .collect(Collectors.toList()));
-        }
-
-        if(userDTO.getSalesDTO() != null){
-            user.setSales(userDTO.getSalesDTO()
-                    .stream()
-                    .map(saleDTO -> saleConverter.convertToEntity(saleDTO))
-                    .collect(Collectors.toList()));
-        }
-
-        return user;
     }
+
+
+    public User convertToBasicEntity(UserDTO userDTO) {
+        try{
+
+        }
+        catch(IllegalArgumentException e){
+            System.out.println("values cannot be null:"+e.getMessage());
+        }
+        catch(ConversionException e){
+            System.out.println("conversor error:"+e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+        return null;
+    }
+
+
+    public UserDTO convertToFullDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        try{
+            userDTO.setUserId(user.getUserId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setPassword(user.getPassword());
+            userDTO.setMail(user.getEmail());
+            userDTO.setAddress(user.getAddress());
+            userDTO.setPhoneNumber(user.getPhoneNumber());
+            userDTO.setRole(user.getRole().toString());
+            userDTO.setDocument(user.getDocument());
+            userDTO.setName(user.getName());
+            
+
+
+        }
+        catch(IllegalArgumentException e){
+            System.out.println("values cannot be null:"+e.getMessage());
+        }
+        catch(ConversionException e){
+            System.out.println("conversor error:"+e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+        return userDTO;
+    }
+
+    public UserDTO convertToBasicDTO(User user) {
+        try{
+
+        }
+        catch(IllegalArgumentException e){
+            System.out.println("values cannot be null:"+e.getMessage());
+        }
+        catch(ConversionException e){
+            System.out.println("conversor error:"+e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+        return null;
+    }
+
+
 }

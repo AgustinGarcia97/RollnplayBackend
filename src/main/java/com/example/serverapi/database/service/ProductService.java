@@ -1,6 +1,5 @@
 package com.example.serverapi.database.service;
 
-import com.example.serverapi.database.repository.CategoryRepository;
 import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
 import com.example.serverapi.dto.ProductDTO;
@@ -9,7 +8,6 @@ import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 
-import com.example.serverapi.utils.converter.DtoAssembler;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -17,11 +15,8 @@ import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

@@ -1,4 +1,4 @@
-package com.example.serverapi.utils.Converter;
+package com.example.serverapi.utils.converter;
 
 import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.SaleDTO;

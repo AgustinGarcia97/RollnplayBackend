@@ -1,33 +1,54 @@
-package com.example.serverapi.utils.Converter;
+package com.example.serverapi.utils.converter;
 
 import com.example.serverapi.dto.ProductDTO;
+import com.example.serverapi.exceptions.dtoExceptions.ConversionException;
 import com.example.serverapi.model.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProductConverter {
-    @Autowired
-    CategoryConverter categoryConverter;
-    @Autowired
-    PlayerConverter playerConverter;
 
-
-    public Product convertToEntity(ProductDTO productDTO) {
+    public Product convertToEntity(ProductDTO productDTO){
         Product product = new Product();
-        if(productDTO.getProductId() != null){
-            product.setProductId(productDTO.getProductId());
+        try{
+            if(productDTO.getProductId() != null){
+                product.setProductId(productDTO.getProductId());
+            }
+            product.setProductName(productDTO.getProductName());
+            product.setProductDescription(productDTO.getProductDescription());
+
         }
-        product.setProductName(productDTO.getProductName());
-        product.setProductDescription(productDTO.getProductDescription());
-        product.setCategory(
-                categoryConverter.convertToEntity(productDTO.getProductCategory())
-        );
-        product.setPlayers(
-                playerConverter.convertToEntity(productDTO.getProductPlayers())
-        );
+        catch(IllegalArgumentException e){
+            System.out.println("values cannot be null:"+e.getMessage());
+        }
+        catch(ConversionException e){
+            System.out.println("conversor error:"+e.getMessage());
 
-
+        }
+        catch(Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
         return product;
+    }
+
+    public ProductDTO convertToDTO(Product product){
+        ProductDTO productDTO = new ProductDTO();
+        try{
+            productDTO.setProductId(product.getProductId());
+            productDTO.setProductName(product.getProductName());
+            productDTO.setProductDescription(product.getProductDescription());
+
+        }
+        catch(IllegalArgumentException e){
+            System.out.println("values cannot be null:"+e.getMessage());
+        }
+        catch(ConversionException e){
+            System.out.println("conversor error:"+e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+        return productDTO;
     }
 }

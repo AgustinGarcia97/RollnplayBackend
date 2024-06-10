@@ -3,8 +3,6 @@ package com.example.serverapi.database.service;
 import com.example.serverapi.database.repository.CategoryRepository;
 import com.example.serverapi.dto.CategoryDTO;
 import com.example.serverapi.model.Category;
-import com.example.serverapi.utils.DTOConverter;
-import com.example.serverapi.utils.converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

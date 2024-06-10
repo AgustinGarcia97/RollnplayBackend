@@ -1,49 +1,58 @@
-package com.example.serverapi.utils.Converter;
-
+package com.example.serverapi.utils.converter;
 
 import com.example.serverapi.dto.ListingDTO;
+import com.example.serverapi.exceptions.dtoExceptions.ConversionException;
 import com.example.serverapi.model.Listing;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 public class ListingConverter {
 
-
-    private ProductConverter productConverter;
-
-
-    private UserConverter userConverter;
-
-
-    private ImageConverter imageConverter;
-
-
-
     public Listing convertToEntity(ListingDTO listingDTO){
         Listing listing = new Listing();
-        if(listingDTO.getListingId() != 0){
-            listing.setListingId(listingDTO.getListingId());
-        }
+        try{
+            if(listingDTO.getListingId() != null){
+                listing.setListingId(listingDTO.getListingId());
+                }
 
-        listing.setTitle(listing.getTitle());
-        listing.setDescription(listingDTO.getDescription());
-        listing.setPrice(listingDTO.getPrice());
-        listing.setStock(listingDTO.getStock());
-        listing.setState(listingDTO.getListingState());
-        listing.setProduct(productConverter.convertToEntity(listingDTO.getProductDTO()));
-        listing.setUser(userConverter.convertToEntity(listingDTO.getUserDTO()));
+            listing.setTitle(listingDTO.getTitle());
+            listing.setDescription(listingDTO.getDescription());
+            listing.setPrice(listingDTO.getPrice());
+            listing.setStock(listingDTO.getStock());
 
-        listing.setImages(listingDTO
-                .getImages()
-                .stream()
-                .map(imageDTO -> imageConverter.convertToEntity(imageDTO))
-                .collect(Collectors.toList()));
+        } catch(IllegalArgumentException e) {
+            System.out.println("values cannot be null:"+e.getMessage());
+        } catch(ConversionException e) {
+            System.out.println("conversor error:"+e.getMessage());
+        } catch(Exception e) {
+            System.out.println("error:"+e.getMessage());
 
-
-
-        return listing;
+        }return listing;
     }
-}
+
+    public ListingDTO convertToDTO(Listing listing){
+        ListingDTO listingDTO = new ListingDTO();
+        try{
+            listingDTO.setListingId(listing.getListingId());
+            listingDTO.setTitle(listing.getTitle());
+            listingDTO.setDescription(listing.getDescription());
+            listingDTO.setPrice(listing.getPrice());
+            listingDTO.setStock(listing.getStock());
+            listingDTO.setUserId(listing.getUser().getUserId());
+
+        } catch(IllegalArgumentException e) {
+            System.out.println("values cannot be null:"+e.getMessage());
+        } catch(ConversionException e) {
+            System.out.println("conversor error:"+e.getMessage());
+        } catch(Exception e) {
+            System.out.println("error:"+e.getMessage());
+
+        }return listingDTO;
+
+    }
+
+
+
+
+    }
+
