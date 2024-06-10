@@ -32,13 +32,7 @@ public class PurchaseConverter {
             }
 
             purchase.setPurchaseDateTime(purchaseDTO.getPurchaseDateTime());
-            Optional<User> existence = userService.getUserById(purchaseDTO.getSeller());
 
-            if (existence.isPresent()) {
-                purchase.setUser(existence.get());
-            } else {
-                throw new UserNotFoundException("User with ID " + purchaseDTO.getSeller() + " not found");
-            }
 
             try {
                 purchase.setListingToList(listingConverter.convertToEntity(purchaseDTO.getListingDTO()));

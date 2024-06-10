@@ -2,7 +2,6 @@ package com.example.serverapi.utils.converter;
 
 import com.example.serverapi.dto.*;
 import com.example.serverapi.model.*;
-import com.example.serverapi.utils.UserConverter;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
