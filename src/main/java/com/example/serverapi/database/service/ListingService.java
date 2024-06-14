@@ -56,11 +56,6 @@ public class ListingService {
                 product = productService.createOrUpdateProduct(listingDTO.getProductDTO());
             }
 
-
-
-
-
-
             Optional<User> user = userService.getUserById(listingDTO.getUserId());
             if (user.isPresent()) {
                 listing.setUser(user.get());
@@ -129,6 +124,28 @@ public class ListingService {
 
     public Optional<Listing> getListingById(long id) {
         return listingRepository.findById(id);
+    }
+
+    @Transactional
+    public Optional<List<ListingDTO>> getAllListingsDTO() {
+        try{
+            List<Listing> listings = listingRepository.findAll();
+            List<ListingDTO> dtos = listings
+                    .stream()
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .collect(Collectors.toList());
+            return Optional.ofNullable(dtos);
+
+
+        }
+        catch(ConversionException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+
     }
 
 

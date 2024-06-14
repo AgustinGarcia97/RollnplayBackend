@@ -19,7 +19,7 @@ public class UserConverter {
                 user.setUserId(userDTO.getUserId());
             }
 
-            user.setName(userDTO.getName());
+            user.setFirstName(userDTO.getName());
             user.setUsername(userDTO.getUsername());
             user.setPassword(userDTO.getPassword());
             user.setEmail(userDTO.getMail());
@@ -73,7 +73,7 @@ public class UserConverter {
             userDTO.setPhoneNumber(user.getPhoneNumber());
             userDTO.setRole(user.getRole().toString());
             userDTO.setDocument(user.getDocument());
-            userDTO.setName(user.getName());
+            userDTO.setName(user.getFirstName());
             
 
 

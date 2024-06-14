@@ -16,6 +16,8 @@ public class ProductDTO {
     private String productDescription;
     private CategoryDTO productCategory;
     private PlayerDTO productPlayers;
+    private String categoryName;
+    private String playerCounter;
     private double productPrice;
 
     public ProductDTO(long productId,String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers, long productPrice) {

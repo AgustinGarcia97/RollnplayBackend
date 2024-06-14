@@ -6,17 +6,26 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+
 @Entity
+@Builder
 @Table(name="user")
+@AllArgsConstructor
 @Data
-public class User implements Serializable {
+public class User implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -24,8 +33,10 @@ public class User implements Serializable {
     private UUID userId;
     @Column(unique=true, nullable=false)
     private String username;
-    @Column(nullable=false)
-    private String name;
+    @Column(nullable=false, name="first_name")
+    private String firstName;
+    @Column(nullable=false, name="last_name")
+    private String lastName;
     @Column(nullable=false)
     private String password;
     @Column(nullable=false)
@@ -54,10 +65,10 @@ public class User implements Serializable {
     private List<Sale> sales;
 
 
-    public User(String username, String name, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
+    public User(String username, String firstName, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
 
         this.username = username;
-        this.name = name;
+        this.firstName = firstName;
         this.password = password;
         this.email = email;
         this.address = address;
@@ -105,4 +116,28 @@ public class User implements Serializable {
     }
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
 }

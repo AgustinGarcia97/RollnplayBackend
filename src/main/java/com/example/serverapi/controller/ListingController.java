@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 public class ListingController {
@@ -37,6 +41,23 @@ public class ListingController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/get-listings")
+    public ResponseEntity<?> getListings() {
+        try{
+            List<ListingDTO> listingDTOS = new ArrayList<ListingDTO>();
+            Optional<List<ListingDTO>> existences = listingService.getAllListingsDTO();
+            if(existences.isPresent()){
+                listingDTOS = existences.get();
+            }
+            return ResponseEntity.ok(listingDTOS);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
     @PostMapping("/create-listing")
     public ResponseEntity<?>  createListing(@RequestBody ListingDTO listingDTO){
