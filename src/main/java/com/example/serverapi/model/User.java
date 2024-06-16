@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
@@ -31,8 +32,6 @@ public class User implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name="user_id")
     private UUID userId;
-    @Column(unique=true, nullable=false)
-    private String username;
     @Column(nullable=false, name="first_name")
     private String firstName;
     @Column(nullable=false, name="last_name")
@@ -65,9 +64,7 @@ public class User implements Serializable, UserDetails {
     private List<Sale> sales;
 
 
-    public User(String username, String firstName, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
-
-        this.username = username;
+    public User( String firstName, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
         this.firstName = firstName;
         this.password = password;
         this.email = email;
@@ -76,7 +73,6 @@ public class User implements Serializable, UserDetails {
         this.document = document;
         this.listings = new ArrayList<>();
         this.isSeller = isSeller;
-
     }
 
     public User() {
@@ -118,26 +114,34 @@ public class User implements Serializable, UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
+
+
+
 }

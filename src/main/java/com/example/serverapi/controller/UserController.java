@@ -14,7 +14,7 @@ import com.example.serverapi.model.User;
 
 import java.util.Optional;
 import java.util.UUID;
-
+@RequestMapping("/user")
 @RestController
 public class UserController {
 
@@ -32,6 +32,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getUser(@RequestParam UUID id){
         try{
             UserDTO userDTO = userService.getUserDTOById(id);
+
             return ResponseEntity.status(HttpStatus.OK).body(userDTO);
         }
         catch(UserPersistenceException e){
