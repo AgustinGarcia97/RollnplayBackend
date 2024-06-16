@@ -20,7 +20,6 @@ public class UserConverter {
             }
 
             user.setFirstName(userDTO.getName());
-            user.setUsername(userDTO.getUsername());
             user.setPassword(userDTO.getPassword());
             user.setEmail(userDTO.getMail());
             user.setPhoneNumber(userDTO.getPhoneNumber());
