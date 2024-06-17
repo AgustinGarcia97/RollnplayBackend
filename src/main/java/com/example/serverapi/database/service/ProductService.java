@@ -8,7 +8,8 @@ import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
 
-import com.example.serverapi.utils.converter.DtoAssembler;
+
+import com.example.serverapi.utils.Converter.DtoAssembler;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -81,18 +82,13 @@ public class ProductService {
     @Transactional
     public Product createOrUpdateProduct(ProductDTO productDTO) {
         // en caso de que no exista player o category deberia persistirla antes en la db
-        Product product = null;
+        Product product = new Product();
         Category category = null;
         Player player = null;
 
         try{
-            if(productDTO.getProductId() != null){
-                Optional<Product> productRequest = findById(productDTO.getProductId());
-                if(productRequest.isPresent()){
-                    product = productRequest.get();
-                }
-            }
-            else{
+
+
                 if(productDTO.getProductCategory().getCategoryId() == null){
                     category = categoryService.createOrUpdateCategory(productDTO.getProductCategory());
                 } else {
@@ -110,12 +106,13 @@ public class ProductService {
                         player = existence.get();
                     }
                 }
+
+                product = dtoAssembler.getProductEntity(productDTO);
                 product.setCategory(category);
                 product.setPlayers(player);
-            }
 
-            product = dtoAssembler.getProductEntity(productDTO);
             product = productRepository.save(product);
+
 
         }
         catch(HibernateException e){

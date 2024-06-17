@@ -10,7 +10,8 @@ import com.example.serverapi.model.Image;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.model.Product;
 import com.example.serverapi.model.User;
-import com.example.serverapi.utils.converter.DtoAssembler;
+
+import com.example.serverapi.utils.Converter.DtoAssembler;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +46,15 @@ public class ListingService {
         Listing listing = null;
         try {
             listing = dtoAssembler.getListingEntity(listingDTO);
-            Product product;
+            Product product = null;
             List<Image> images = new ArrayList<>();
             List<ImageDTO> imagesDTO = new ArrayList<>();
-            Optional <Product> existence = productService.findById(listingDTO.getProductDTO().getProductId());
-            //Si el producto existe lo obtiene, sino crea uno nuevo
-            if (existence.isPresent()) {
-                product = existence.get();
+            if(listingDTO.getProductDTO().getProductId() != null) {
+                Optional<Product> existence = productService.findById(listingDTO.getProductDTO().getProductId());
+                //Si el producto existe lo obtiene, sino crea uno nuevo
+                if (existence.isPresent()) {
+                    product = existence.get();
+                }
             } else {
                 product = productService.createOrUpdateProduct(listingDTO.getProductDTO());
             }

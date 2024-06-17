@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+@RequestMapping("/listing")
 @RestController
 public class ListingController {
 
