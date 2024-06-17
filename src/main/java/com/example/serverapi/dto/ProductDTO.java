@@ -16,6 +16,7 @@ public class ProductDTO {
     private String productDescription;
     private CategoryDTO productCategory;
     private PlayerDTO productPlayers;
+    private BrandDTO productBrand;
     private String categoryName;
     private String playerCounter;
     private double productPrice;

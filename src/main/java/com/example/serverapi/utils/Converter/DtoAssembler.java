@@ -2,6 +2,7 @@ package com.example.serverapi.utils.Converter;
 
 import com.example.serverapi.dto.*;
 import com.example.serverapi.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,10 +17,13 @@ public class DtoAssembler {
     private final CategoryConverter categoryConverter;
     private final PlayerConverter playerConverter;
     private final ImageConverter imageConverter;
+    private final BrandConverter brandConverter;
 
+    @Autowired
     public DtoAssembler(UserConverter userConverter, ListingConverter listingConverter,
                         ProductConverter productConverter, CategoryConverter categoryConverter,
-                        PlayerConverter playerConverter, ImageConverter imageConverter) {
+                        PlayerConverter playerConverter, ImageConverter imageConverter,
+                        BrandConverter brandConverter) {
 
         this.userConverter = userConverter;
         this.listingConverter = listingConverter;
@@ -27,6 +31,7 @@ public class DtoAssembler {
         this.categoryConverter = categoryConverter;
         this.playerConverter = playerConverter;
         this.imageConverter = imageConverter;
+        this.brandConverter = brandConverter;
     }
 
     public User getUserEntity(UserDTO userDTO) {
@@ -91,6 +96,20 @@ public class DtoAssembler {
         }
         return player;
     }
+
+    public Brand getBrandEntity(BrandDTO brandDTO) {
+        Brand brand = null;
+        try{
+            brand = brandConverter.convertToEntity(brandDTO);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return brand;
+    }
+
+
+
 
     public Category getCategoryEntity(CategoryDTO categoryDTO) {
         Category category = null;
@@ -200,6 +219,18 @@ public class DtoAssembler {
             e.printStackTrace();
         }
         return playerDTO;
+    }
+
+    public BrandDTO getBrandDTO(Brand brand) {
+        BrandDTO brandDTO = null;
+        try{
+            brandDTO = brandConverter.convertToDto(brand);
+        }
+        catch(Exception e){
+
+            e.printStackTrace();
+        }
+        return brandDTO;
     }
 
 

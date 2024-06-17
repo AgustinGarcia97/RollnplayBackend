@@ -4,6 +4,7 @@ import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
 import com.example.serverapi.dto.ProductDTO;
 import com.example.serverapi.exceptions.CustomDatabaseException;
+import com.example.serverapi.model.Brand;
 import com.example.serverapi.model.Category;
 import com.example.serverapi.model.Player;
 import com.example.serverapi.model.Product;
@@ -25,14 +26,15 @@ import java.util.Optional;
 public class ProductService {
 
 
-    private final PlayerRepository playerRepository;
-    private ProductRepository productRepository;
 
-    private EntityManager entityManager;
+
+    private ProductRepository productRepository;
 
     private final CategoryService categoryService;
 
     private final PlayerService playerService;
+
+    private final BrandService brandService;
 
     private DtoAssembler dtoAssembler;
 
@@ -42,13 +44,14 @@ public class ProductService {
 
     @Autowired
     public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
-                          CategoryService categoryService, PlayerService playerService, PlayerRepository playerRepository) {
+                          CategoryService categoryService, PlayerService playerService,
+                          BrandService brandService) {
 
         this.productRepository = productRepository;
         this.dtoAssembler = dtoAssembler;
         this.categoryService = categoryService;
         this.playerService = playerService;
-        this.playerRepository = playerRepository;
+        this.brandService = brandService;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -82,9 +85,10 @@ public class ProductService {
     @Transactional
     public Product createOrUpdateProduct(ProductDTO productDTO) {
         // en caso de que no exista player o category deberia persistirla antes en la db
-        Product product = new Product();
+        Product product = null;
         Category category = null;
         Player player = null;
+        Brand brand;
 
         try{
 
@@ -107,9 +111,16 @@ public class ProductService {
                     }
                 }
 
+                if(productDTO.getProductBrand().getBrandId() == null){
+                    brand = brandService.createOrUpdateBrand(productDTO.getProductBrand());
+                } else {
+                    brand = brandService.getBrandById(productDTO.getProductBrand().getBrandId());
+                }
+
                 product = dtoAssembler.getProductEntity(productDTO);
                 product.setCategory(category);
                 product.setPlayers(player);
+                product.setProductBrand(brand);
 
             product = productRepository.save(product);
 

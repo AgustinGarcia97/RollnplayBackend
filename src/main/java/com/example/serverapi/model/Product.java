@@ -45,6 +45,9 @@ public class Product implements Serializable {
     @JsonManagedReference
     private Player players;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Brand productBrand;
+
     public Product(String productName, String productDescription, double productPrice,  double productStock) {
         this.productName = productName;
         this.productPrice = productPrice;
