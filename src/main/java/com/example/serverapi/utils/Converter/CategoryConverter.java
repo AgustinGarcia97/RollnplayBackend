@@ -1,4 +1,4 @@
-package com.example.serverapi.utils.converter;
+package com.example.serverapi.utils.Converter;
 
 import com.example.serverapi.dto.CategoryDTO;
 import com.example.serverapi.exceptions.dtoExceptions.ConversionException;

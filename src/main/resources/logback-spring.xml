@@ -63,7 +63,7 @@
             </providers>
         </encoder>
     </appender>
-    <root level="DEBUG">
+    <root level="INFO">     <!-- cambiar a debug si es necesario -->
         <appender-ref ref="console"/>
         <!-- uncomment this to have also JSON logs -->
         <!--<appender-ref ref="logstash"/>-->

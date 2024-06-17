@@ -72,7 +72,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/delete-product")
-    public ResponseEntity<?> deleteProduct(@RequestBody Long productId) {
+    public ResponseEntity<?> deleteProduct(@RequestParam Long productId) {
         try {
             productService.deleteProductById(productId);
             return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully");

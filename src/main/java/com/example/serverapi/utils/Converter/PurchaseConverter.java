@@ -1,4 +1,4 @@
-package com.example.serverapi.utils.converter;
+package com.example.serverapi.utils.Converter;
 
 import com.example.serverapi.database.service.UserService;
 import com.example.serverapi.dto.PurchaseDTO;
@@ -8,6 +8,7 @@ import com.example.serverapi.model.Purchase;
 import com.example.serverapi.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.example.serverapi.utils.Converter.ListingConverter;
 
 import java.util.Optional;
 

@@ -7,8 +7,9 @@ import com.example.serverapi.exceptions.userExceptions.UserConversionException;
 import com.example.serverapi.exceptions.userExceptions.UserPersistenceException;
 import com.example.serverapi.model.Listing;
 import com.example.serverapi.model.User;
-import com.example.serverapi.utils.converter.DtoAssembler;
-import com.example.serverapi.utils.converter.UserConverter;
+
+import com.example.serverapi.utils.Converter.DtoAssembler;
+import com.example.serverapi.utils.Converter.UserConverter;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
