@@ -18,12 +18,15 @@ public class DtoAssembler {
     private final PlayerConverter playerConverter;
     private final ImageConverter imageConverter;
     private final BrandConverter brandConverter;
+    private final DurationConverter durationConverter;
+    private final DifficultyConverter difficultyConverter;
 
     @Autowired
     public DtoAssembler(UserConverter userConverter, ListingConverter listingConverter,
                         ProductConverter productConverter, CategoryConverter categoryConverter,
                         PlayerConverter playerConverter, ImageConverter imageConverter,
-                        BrandConverter brandConverter) {
+                        BrandConverter brandConverter, DurationConverter durationConverter,
+                        DifficultyConverter difficultyConverter) {
 
         this.userConverter = userConverter;
         this.listingConverter = listingConverter;
@@ -32,6 +35,8 @@ public class DtoAssembler {
         this.playerConverter = playerConverter;
         this.imageConverter = imageConverter;
         this.brandConverter = brandConverter;
+        this.durationConverter = durationConverter;
+        this.difficultyConverter = difficultyConverter;
     }
 
     public User getUserEntity(UserDTO userDTO) {
@@ -133,6 +138,26 @@ public class DtoAssembler {
         return image;
     }
 
+    public Difficulty getDifficultyEntity(DifficultyDTO difficultyDTO){
+        Difficulty difficulty = null;
+        try{
+            difficulty = difficultyConverter.convertToEntity(difficultyDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return difficulty;
+    }
+
+    public Duration getDurationEntity(DurationDTO durationDTO){
+        Duration duration = null;
+        try{
+            duration = durationConverter.convertToEntity(durationDTO);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return duration;
+    }
+
 
     public UserDTO getUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
@@ -161,6 +186,17 @@ public class DtoAssembler {
             listingDTO = listingConverter.convertToDTO(listing);
 
             listingDTO.setProductDTO(getProductDTO(listing.getProduct()));
+
+            if( listing.getProduct().getProductBrand() != null ){
+                listingDTO.getProductDTO().setBrandName(listing.getProduct().getProductBrand().getBrandName());
+            }
+
+
+            listingDTO.getProductDTO().setCategoryName(listing.getProduct().getCategory().getCategoryName());
+
+            listingDTO.getProductDTO().setPlayerCounter(listing.getProduct().getPlayers().getNumberOfPlayers());
+
+            listingDTO.setImages(listing.getImages().stream().map(image -> imageConverter.convertToDTO(image)).collect(Collectors.toList()));
 
             if(listing.getImages() != null){
                 listing
@@ -231,6 +267,26 @@ public class DtoAssembler {
             e.printStackTrace();
         }
         return brandDTO;
+    }
+
+    public DifficultyDTO getDifficultyDTO(Difficulty difficulty) {
+        DifficultyDTO difficultyDTO = null;
+        try{
+            difficultyDTO = difficultyConverter.convertToDTO(difficulty);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return difficultyDTO;
+    }
+
+    public DurationDTO getDurationDTO(Duration duration) {
+        DurationDTO durationDTO = null;
+        try{
+            durationDTO = durationConverter.convertToDTO(duration);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return durationDTO;
     }
 
 
