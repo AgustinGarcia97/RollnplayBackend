@@ -17,16 +17,14 @@ public class ProductDTO {
     private CategoryDTO productCategory;
     private PlayerDTO productPlayers;
     private BrandDTO productBrand;
+    private DurationDTO durationDTO;
+    private DifficultyDTO difficultyDTO;
+    private String duration;
+    private String difficulty;
     private String categoryName;
     private String playerCounter;
+    private String brandName;
     private double productPrice;
 
-    public ProductDTO(long productId,String productName, String productDescription, CategoryDTO productCategory, PlayerDTO productPlayers, long productPrice) {
-        this.productId = productId;
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.productCategory = productCategory;
-        this.productPlayers = productPlayers;
-        this.productPrice = productPrice;
-    }   
+
 }
