@@ -39,6 +39,7 @@ public class ProductConverter {
             productDTO.setProductDescription(product.getProductDescription());
             productDTO.setCategoryName(product.getCategory().getCategoryName());
             productDTO.setPlayerCounter(product.getPlayers().getNumberOfPlayers());
+            productDTO.setBrandName(product.getProductBrand().getBrandName());
 
         }
         catch(IllegalArgumentException e){

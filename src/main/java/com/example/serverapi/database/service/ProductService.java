@@ -4,10 +4,7 @@ import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
 import com.example.serverapi.dto.ProductDTO;
 import com.example.serverapi.exceptions.CustomDatabaseException;
-import com.example.serverapi.model.Brand;
-import com.example.serverapi.model.Category;
-import com.example.serverapi.model.Player;
-import com.example.serverapi.model.Product;
+import com.example.serverapi.model.*;
 
 
 import com.example.serverapi.utils.Converter.DtoAssembler;
@@ -36,6 +33,10 @@ public class ProductService {
 
     private final BrandService brandService;
 
+    private final DurationService durationService;
+
+    private final DifficultyService difficultyService;
+
     private DtoAssembler dtoAssembler;
 
 
@@ -45,13 +46,16 @@ public class ProductService {
     @Autowired
     public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
                           CategoryService categoryService, PlayerService playerService,
-                          BrandService brandService) {
+                          BrandService brandService, DurationService durationService,
+                          DifficultyService difficultyService) {
 
         this.productRepository = productRepository;
         this.dtoAssembler = dtoAssembler;
         this.categoryService = categoryService;
         this.playerService = playerService;
         this.brandService = brandService;
+        this.durationService = durationService;
+        this.difficultyService = difficultyService;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -89,6 +93,8 @@ public class ProductService {
         Category category = null;
         Player player = null;
         Brand brand;
+        Duration duration = null;
+        Difficulty difficulty = null;
 
         try{
 
@@ -117,10 +123,30 @@ public class ProductService {
                     brand = brandService.getBrandById(productDTO.getProductBrand().getBrandId());
                 }
 
+                if(productDTO.getDurationDTO().getId() == null ) {
+                    duration = durationService.createOrUpdateDuration(productDTO.getDurationDTO());
+                } else{
+                    Optional<Duration> existence = durationService.getDurationById(productDTO.getDurationDTO().getId());
+                    if(existence.isPresent()){
+                        duration = existence.get();
+                    }
+                }
+
+                if(productDTO.getDifficultyDTO().getId() == null ) {
+                    difficulty = difficultyService.createOrUpdateDifficulty(productDTO.getDifficultyDTO());
+                } else {
+                    Optional<Difficulty> existence = difficultyService.getDifficultyDTOById(productDTO.getDifficultyDTO().getId());
+                    if(existence.isPresent()){
+                        difficulty = existence.get();
+                    }
+                }
+
                 product = dtoAssembler.getProductEntity(productDTO);
                 product.setCategory(category);
                 product.setPlayers(player);
                 product.setProductBrand(brand);
+                product.setDuration(duration);
+                product.setDifficulty(difficulty);
 
             product = productRepository.save(product);
 
