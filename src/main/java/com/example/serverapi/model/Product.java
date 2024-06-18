@@ -48,6 +48,12 @@ public class Product implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Brand productBrand;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Difficulty difficulty;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Duration duration;
+
     public Product(String productName, String productDescription, double productPrice,  double productStock) {
         this.productName = productName;
         this.productPrice = productPrice;
