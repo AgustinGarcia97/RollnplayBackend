@@ -1,171 +1,166 @@
 package com.example.serverapi.database.service;
 
-import com.example.serverapi.database.repository.PlayerRepository;
-import com.example.serverapi.database.repository.ProductRepository;
-import com.example.serverapi.dto.ProductDTO;
-import com.example.serverapi.exceptions.CustomDatabaseException;
-import com.example.serverapi.model.*;
+import java.util.Optional;
 
-
-import com.example.serverapi.utils.Converter.DtoAssembler;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.example.serverapi.database.repository.ProductRepository;
+import com.example.serverapi.dto.ProductDTO;
+import com.example.serverapi.exceptions.CustomDatabaseException;
+import com.example.serverapi.model.Brand;
+import com.example.serverapi.model.Category;
+import com.example.serverapi.model.Difficulty;
+import com.example.serverapi.model.Duration;
+import com.example.serverapi.model.Player;
+import com.example.serverapi.model.Product;
+import com.example.serverapi.utils.Converter.DtoAssembler;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService {
 
+  private ProductRepository productRepository;
 
+  private final CategoryService categoryService;
 
+  private final PlayerService playerService;
 
-    private ProductRepository productRepository;
+  private final BrandService brandService;
 
-    private final CategoryService categoryService;
+  private final DurationService durationService;
 
-    private final PlayerService playerService;
+  private final DifficultyService difficultyService;
 
-    private final BrandService brandService;
+  private DtoAssembler dtoAssembler;
 
-    private final DurationService durationService;
+  @Autowired
+  public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
+      CategoryService categoryService, PlayerService playerService,
+      BrandService brandService, DurationService durationService,
+      DifficultyService difficultyService) {
 
-    private final DifficultyService difficultyService;
+    this.productRepository = productRepository;
+    this.dtoAssembler = dtoAssembler;
+    this.categoryService = categoryService;
+    this.playerService = playerService;
+    this.brandService = brandService;
+    this.durationService = durationService;
+    this.difficultyService = difficultyService;
+  }
 
-    private DtoAssembler dtoAssembler;
+  Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  public Page<Product> getProducts(PageRequest pageRequest) {
+    return productRepository.findAll(pageRequest);
+  }
 
+  public Optional<ProductDTO> findByIdDTO(long id) {
+    ProductDTO productDTO = null;
+    try {
+      Optional<Product> existence = productRepository.findById(id);
+      if (existence.isPresent()) {
+        productDTO = dtoAssembler.getProductDTO(existence.get());
+        productDTO.setProductCategory(dtoAssembler.getCategoryDTO(existence.get().getCategory()));
+        productDTO.setProductPlayers(dtoAssembler.getPlayerDTO(existence.get().getPlayers()));
+      } else {
+        throw new EntityNotFoundException("Product with id " + id + " not found");
+      }
 
-
-
-    @Autowired
-    public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
-                          CategoryService categoryService, PlayerService playerService,
-                          BrandService brandService, DurationService durationService,
-                          DifficultyService difficultyService) {
-
-        this.productRepository = productRepository;
-        this.dtoAssembler = dtoAssembler;
-        this.categoryService = categoryService;
-        this.playerService = playerService;
-        this.brandService = brandService;
-        this.durationService = durationService;
-        this.difficultyService = difficultyService;
+    } catch (EntityNotFoundException e) {
+      return Optional.empty();
     }
+    return Optional.ofNullable(productDTO);
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+  }
 
-    public Optional<ProductDTO> findByIdDTO(long id) {
-        ProductDTO productDTO = null;
-        try {
-            Optional<Product> existence = productRepository.findById(id);
-            if (existence.isPresent()) {
-                productDTO = dtoAssembler.getProductDTO(existence.get());
-                productDTO.setProductCategory(dtoAssembler.getCategoryDTO(existence.get().getCategory()));
-                productDTO.setProductPlayers(dtoAssembler.getPlayerDTO(existence.get().getPlayers()));
-            }
-            else {
-                throw new EntityNotFoundException("Product with id " + id + " not found");
-            }
+  public Optional<Product> findById(Long id) {
+    return productRepository.findById(id);
+  }
 
+  @Transactional
+  public Product createOrUpdateProduct(ProductDTO productDTO) {
+    // en caso de que no exista player o category deberia persistirla antes en la db
+    Product product = null;
+    Category category = null;
+    Player player = null;
+    Brand brand;
+    Duration duration = null;
+    Difficulty difficulty = null;
+
+    try {
+
+      if (productDTO.getProductCategory().getCategoryId() == null) {
+        category = categoryService.createOrUpdateCategory(productDTO.getProductCategory());
+      } else {
+        Optional<Category> existence = categoryService
+            .getCategoryById(productDTO.getProductCategory().getCategoryId());
+        if (existence.isPresent()) {
+          category = existence.get();
         }
-        catch(EntityNotFoundException e){
-            return Optional.empty();
+      }
+
+      if (productDTO.getProductPlayers().getPlayerId() == null) {
+        player = playerService.createOrUpdatePlayer(productDTO.getProductPlayers());
+      } else {
+        Optional<Player> existence = playerService.getPlayerById(productDTO.getProductPlayers().getPlayerId());
+        if (existence.isPresent()) {
+          player = existence.get();
         }
-        return Optional.ofNullable(productDTO);
+      }
 
-    }
+      if (productDTO.getProductBrand().getBrandId() == null) {
+        brand = brandService.createOrUpdateBrand(productDTO.getProductBrand());
+      } else {
+        brand = brandService.getBrandById(productDTO.getProductBrand().getBrandId());
+      }
 
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
-    }
-
-
-    @Transactional
-    public Product createOrUpdateProduct(ProductDTO productDTO) {
-        // en caso de que no exista player o category deberia persistirla antes en la db
-        Product product = null;
-        Category category = null;
-        Player player = null;
-        Brand brand;
-        Duration duration = null;
-        Difficulty difficulty = null;
-
-        try{
-
-
-                if(productDTO.getProductCategory().getCategoryId() == null){
-                    category = categoryService.createOrUpdateCategory(productDTO.getProductCategory());
-                } else {
-                    Optional<Category> existence = categoryService.getCategoryById(productDTO.getProductCategory().getCategoryId());
-                    if(existence.isPresent()){
-                        category = existence.get();
-                    }
-                }
-
-                if(productDTO.getProductPlayers().getPlayerId() == null){
-                    player = playerService.createOrUpdatePlayer(productDTO.getProductPlayers());
-                } else {
-                    Optional<Player> existence = playerService.getPlayerById(productDTO.getProductPlayers().getPlayerId());
-                    if(existence.isPresent()){
-                        player = existence.get();
-                    }
-                }
-
-                if(productDTO.getProductBrand().getBrandId() == null){
-                    brand = brandService.createOrUpdateBrand(productDTO.getProductBrand());
-                } else {
-                    brand = brandService.getBrandById(productDTO.getProductBrand().getBrandId());
-                }
-
-                if(productDTO.getDurationDTO().getId() == null ) {
-                    duration = durationService.createOrUpdateDuration(productDTO.getDurationDTO());
-                } else{
-                    Optional<Duration> existence = durationService.getDurationById(productDTO.getDurationDTO().getId());
-                    if(existence.isPresent()){
-                        duration = existence.get();
-                    }
-                }
-
-                if(productDTO.getDifficultyDTO().getId() == null ) {
-                    difficulty = difficultyService.createOrUpdateDifficulty(productDTO.getDifficultyDTO());
-                } else {
-                    Optional<Difficulty> existence = difficultyService.getDifficultyDTOById(productDTO.getDifficultyDTO().getId());
-                    if(existence.isPresent()){
-                        difficulty = existence.get();
-                    }
-                }
-
-                product = dtoAssembler.getProductEntity(productDTO);
-                product.setCategory(category);
-                product.setPlayers(player);
-                product.setProductBrand(brand);
-                product.setDuration(duration);
-                product.setDifficulty(difficulty);
-
-            product = productRepository.save(product);
-
-
+      if (productDTO.getDurationDTO().getId() == null) {
+        duration = durationService.createOrUpdateDuration(productDTO.getDurationDTO());
+      } else {
+        Optional<Duration> existence = durationService.getDurationById(productDTO.getDurationDTO().getId());
+        if (existence.isPresent()) {
+          duration = existence.get();
         }
-        catch(HibernateException e){
-            logger.error("Error saving product: {}",product, e);
-            throw new CustomDatabaseException("Error saving product:",e);
+      }
+
+      if (productDTO.getDifficultyDTO().getId() == null) {
+        difficulty = difficultyService.createOrUpdateDifficulty(productDTO.getDifficultyDTO());
+      } else {
+        Optional<Difficulty> existence = difficultyService
+            .getDifficultyDTOById(productDTO.getDifficultyDTO().getId());
+        if (existence.isPresent()) {
+          difficulty = existence.get();
         }
+      }
 
-        return product;
+      product = dtoAssembler.getProductEntity(productDTO);
+      product.setCategory(category);
+      product.setPlayers(player);
+      product.setProductBrand(brand);
+      product.setDuration(duration);
+      product.setDifficulty(difficulty);
+
+      product = productRepository.save(product);
+
+    } catch (HibernateException e) {
+      logger.error("Error saving product: {}", product, e);
+      throw new CustomDatabaseException("Error saving product:", e);
     }
 
+    return product;
+  }
 
-    @Transactional
-    public void deleteProductById(Long id) {
-        productRepository.deleteById(id);
-    }
-
-
+  @Transactional
+  public void deleteProductById(Long id) {
+    productRepository.deleteById(id);
+  }
 
 }

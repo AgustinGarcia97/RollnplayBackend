@@ -1,34 +1,40 @@
 package com.example.serverapi.model;
 
-import com.example.serverapi.dto.PlayerDTO;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.example.serverapi.model.Category;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Data;
 
 @Entity
-@Table(name="product")
+@Table(name = "product")
 @Data
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="product_id")
+    @Column(name = "product_id")
     private Long productId;
-    @Column(name="product_name",nullable=false, unique=true)
+    @Column(name = "product_name", nullable = false, unique = true)
     private String productName;
-    @Column(name="product_description",nullable=false)
+    @Column(name = "product_description", nullable = false)
     private String productDescription;
-    @Column(name="product_price",nullable=false)
+    @Column(name = "product_price", nullable = false)
     private double productPrice;
 
-    @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
     private Category category;
 
     @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
@@ -37,24 +43,28 @@ public class Product implements Serializable {
     @ManyToMany(mappedBy = "productsPurchases", fetch = FetchType.LAZY)
     private List<Purchase> purchase;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Listing> listings;
 
-    @ManyToOne( fetch = FetchType.LAZY,cascade ={CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonManagedReference
     private Player players;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Brand productBrand;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Difficulty difficulty;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private Duration duration;
 
-    public Product(String productName, String productDescription, double productPrice,  double productStock) {
+    // wishlist
+    // @ManyToMany(mappedBy = "products", fetch = FetchType.LAZY)
+    // private List<Wishlist> wishlists;
+
+    public Product(String productName, String productDescription, double productPrice, double productStock) {
         this.productName = productName;
         this.productPrice = productPrice;
         this.productDescription = productDescription;
@@ -63,8 +73,6 @@ public class Product implements Serializable {
 
     public Product() {
     }
-
-
 
     public void setListings(Listing l) {
         this.listings.add(l);

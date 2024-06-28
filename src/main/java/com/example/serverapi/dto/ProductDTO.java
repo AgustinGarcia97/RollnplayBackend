@@ -1,11 +1,8 @@
 package com.example.serverapi.dto;
 
-import com.example.serverapi.model.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,6 +22,4 @@ public class ProductDTO {
     private String playerCounter;
     private String brandName;
     private double productPrice;
-
-
 }
