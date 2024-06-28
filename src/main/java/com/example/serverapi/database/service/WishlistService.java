@@ -1,5 +1,6 @@
 package com.example.serverapi.database.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class WishlistService {
   public Page<Product> getProducts(UUID userId) {
     Set<Product> products = getWishlist(userId).getProducts();
     List<Product> productList = List.copyOf(products);
+    System.out.println("Products: " + productList);
     return new PageImpl<Product>(productList);
   }
 
@@ -39,10 +41,13 @@ public class WishlistService {
     Wishlist wishlist = user.getWishlist();
     System.out.println(wishlist);
     if (wishlist == null) {
+      System.out.println("Creating new wishlist");
       wishlist = new Wishlist();
+      System.out.println("Wishlist: " + wishlist);
       user.setWishlist(wishlist);
       userRepository.save(user);
       wishlist.setUser(user);
+      wishlist.setProducts(new HashSet<>());
       wishlistRepository.save(wishlist);
       return wishlist;
     } else {
@@ -55,8 +60,12 @@ public class WishlistService {
       Long productId) {
     Wishlist wishlist = getWishlist(userUuid);
     Product product = productService.findById(productId).get();
-    wishlist.addProduct(product);
-    wishlistRepository.save(wishlist);
+    if (wishlist.getProducts() == null) {
+      wishlist.setProducts(new HashSet<>());
+    } else {
+      wishlist.addProduct(product);
+      wishlistRepository.save(wishlist);
+    }
   }
 
   public void removeProduct(
@@ -64,7 +73,11 @@ public class WishlistService {
       Long productId) {
     Wishlist wishlist = getWishlist(userUuid);
     Product product = productService.findById(productId).get();
-    wishlist.removeProduct(product);
-    wishlistRepository.save(wishlist);
+    if (wishlist.getProducts() == null) {
+      wishlist.setProducts(new HashSet<>());
+    } else {
+      wishlist.removeProduct(product);
+      wishlistRepository.save(wishlist);
+    }
   }
 }

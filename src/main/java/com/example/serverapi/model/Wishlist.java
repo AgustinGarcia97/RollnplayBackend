@@ -1,7 +1,6 @@
 // Wishlist.java
 package com.example.serverapi.model;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
@@ -25,7 +24,7 @@ public class Wishlist {
 
   @ManyToMany
   @JoinTable(name = "wishlist_products", joinColumns = @JoinColumn(name = "wishlist_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-  private Set<Product> products = new HashSet<>();
+  private Set<Product> products;
 
   public Set<Product> getProducts() {
     return products;
@@ -33,6 +32,10 @@ public class Wishlist {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public void setProducts(Set<Product> products) {
+    this.products = products;
   }
 
   public void addProduct(Product product) {

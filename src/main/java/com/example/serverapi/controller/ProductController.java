@@ -1,7 +1,5 @@
 package com.example.serverapi.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,14 +41,15 @@ public class ProductController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> getProductById(Long id) {
+  public ResponseEntity<?> getProductById(@PathVariable("id") Long id) {
     try {
-      Optional<ProductDTO> productDTO = productService.findByIdDTO(id);
-      if (productDTO.isPresent()) {
-        return new ResponseEntity<>(productDTO.get(), HttpStatus.OK);
-      } else {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-      }
+      return ResponseEntity.ok(productService.findById(id));
+      // Optional<ProductDTO> productDTO = productService.findByIdDTO(id);
+      // if (productDTO.isPresent()) {
+      // return new ResponseEntity<>(productDTO.get(), HttpStatus.OK);
+      // } else {
+      // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+      // }
 
     } catch (UserConversionException e) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

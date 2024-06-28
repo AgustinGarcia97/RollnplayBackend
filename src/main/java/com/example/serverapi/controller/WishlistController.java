@@ -26,7 +26,9 @@ public class WishlistController {
 
   @GetMapping
   public Page<Product> getProducts(@RequestParam String email) {
+    System.out.println("Getting products, email: " + email);
     User user = userRepository.findByEmail(email).get();
+    System.out.println("Getting products, userId: " + user.getUserId());
     return wishlistService.getProducts(user.getUserId());
   }
 
