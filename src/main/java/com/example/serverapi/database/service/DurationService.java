@@ -7,7 +7,9 @@ import com.example.serverapi.utils.Converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DurationService {
@@ -42,5 +44,14 @@ public class DurationService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public List<DurationDTO> getALLDurationDTO() {
+        try{
+           return durationRepository.findAll().stream().map(dtoAssembler::getDurationDTO).toList();
+        } catch (Exception e){
+            return null;
+        }
+
     }
 }

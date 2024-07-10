@@ -8,6 +8,7 @@ import com.example.serverapi.utils.Converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,14 @@ public class PlayerService {
 
     public Optional<Player> getPlayerById(Long id) {
         return playerRepository.findById(id);
+    }
+
+
+    public List<PlayerDTO> getAllPlayers() {
+        try{
+            return playerRepository.findAll().stream().map(dtoAssembler::getPlayerDTO).toList();
+        } catch (Exception e){
+            return null;
+        }
     }
 }

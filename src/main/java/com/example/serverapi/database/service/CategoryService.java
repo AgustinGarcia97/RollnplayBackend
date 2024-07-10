@@ -8,7 +8,9 @@ import com.example.serverapi.utils.Converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
@@ -49,4 +51,12 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
+    public List<CategoryDTO> getAllCategories() {
+        try{
+            return categoryRepository.findAll().stream().map(category -> dtoAssembler.getCategoryDTO(category)).collect(Collectors.toList());
+        } catch(Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

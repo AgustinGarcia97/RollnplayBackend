@@ -8,7 +8,9 @@ import com.example.serverapi.utils.Converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BrandService {
@@ -44,5 +46,13 @@ public class BrandService {
             e.printStackTrace();
         }
         return brand;
+    }
+
+    public List<BrandDTO> getAllBrandsDTO(){
+        try{
+            return brandRepository.findAll().stream().map(brand -> dtoAssembler.getBrandDTO(brand)).collect(Collectors.toList());
+        } catch (Exception e){
+            return null;
+        }
     }
 }
