@@ -22,17 +22,16 @@ public class Listing implements Serializable {
     private double stock;
     private double price;
     private boolean state;
+    private double quantity;
     @ManyToOne(fetch = FetchType.LAZY,cascade =  {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name="user_id")
-    @JsonBackReference
     private User user;
 
     @ManyToOne(fetch =  FetchType.LAZY,cascade =  {CascadeType.PERSIST,CascadeType.MERGE})
     @JoinColumn(name="product_id")
-    @JsonBackReference
     private Product product;
 
-    @ManyToMany(mappedBy="listingsPurchases", fetch = FetchType.LAZY,cascade =  {CascadeType.MERGE, CascadeType.PERSIST} )
+    @ManyToMany(mappedBy="listingsPurchases", fetch = FetchType.LAZY,cascade =  CascadeType.ALL )
     private List<Purchase> purchases;
 
     @ManyToMany(mappedBy="listingsSales", fetch = FetchType.LAZY, cascade =  {CascadeType.MERGE, CascadeType.PERSIST})
@@ -51,21 +50,40 @@ public class Listing implements Serializable {
        this.stock = stock;
     }
 
+    public boolean getState(){
+        return state;
+    }
+
     public void setPrice(double price) {
         this.price = price;
     }
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
     public Product getProduct() {
         return product;
     }
 
+    @PreRemove
+    public void preRemove() {
+        for (Sale sale : sales) {
+            sale.getListingsSales().remove(this);
+            sale.getListingQuantity().remove(this.getListingId());
+        }
+    }
 
 
-
-
-
-
+    @Override
+    public String toString() {
+        return "Listing{" +
+                "listingId=" + listingId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", stock=" + stock +
+                ", price=" + price +
+                ", state=" + state +
+                ", quantity=" + quantity +
+                '}';
+    }
 }
 
 

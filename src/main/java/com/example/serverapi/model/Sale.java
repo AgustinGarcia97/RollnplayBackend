@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name="sale")
@@ -18,23 +20,28 @@ public class Sale {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="sale_id")
-    private long saleId;
+    private Long saleId;
+
     @Column(name="sale_date")
     private LocalDateTime saleDate;
 
     @Column(name="quantity_products")
     private int quantityProducts;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private User user;
+    private double price;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
-            name = "sale_product",
-            joinColumns = @JoinColumn(name="sale_id"),
-            inverseJoinColumns = @JoinColumn(name="product_id")
+            name = "sale_seller",
+            joinColumns = @JoinColumn(name = "sale_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<Product> productsSales;
+    private List<User> seller;
+
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private User buyer;
+
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
@@ -44,7 +51,14 @@ public class Sale {
     )
     private List<Listing> listingsSales;
 
-
+    @ElementCollection
+    @CollectionTable(
+            name = "sale_listing_quantity",
+            joinColumns = @JoinColumn(name = "sale_id")
+    )
+    @MapKeyJoinColumn(name = "listing_id")
+    @Column(name = "quantity")
+    private Map<Long, Double> listingQuantity = new HashMap<>();
 
     public void setListingsSales(Listing listing) {
         if(listingsSales == null) {
@@ -53,13 +67,25 @@ public class Sale {
         listingsSales.add(listing);
     }
 
-    public void setProductSales(Product product) {
-        if(productsSales == null) {
-            productsSales = new ArrayList<>();
-        }
-        productsSales.add(product);
 
+    public void addListingQuantity(Listing listing) {
+        Long listingId = listing.getListingId();
+        double quantity = listing.getQuantity();
+
+        if (listingQuantity.containsKey(listingId)) {
+            double currentQuantity = listingQuantity.get(listingId);
+            listingQuantity.put(listingId, currentQuantity + quantity);
+        } else {
+
+            listingQuantity.put(listingId, quantity);
+        }
     }
+
+    public double getListingQuantity(Long listingId) {
+        return listingQuantity.get(listingId) != null? listingQuantity.get(listingId): 0;
+    }
+
+
 
 
 

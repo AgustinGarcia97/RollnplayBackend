@@ -11,6 +11,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -31,18 +32,13 @@ public class Product implements Serializable {
     @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Category category;
 
-    @ManyToMany(mappedBy = "productsSales", fetch = FetchType.LAZY)
-    private List<Sale> sales;
-
-    @ManyToMany(mappedBy = "productsPurchases", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "productsPurchases",cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private List<Purchase> purchase;
 
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "product",cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<Listing> listings;
 
     @ManyToOne( fetch = FetchType.LAZY,cascade ={CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference
     private Player players;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -70,4 +66,27 @@ public class Product implements Serializable {
         this.listings.add(l);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Double.compare(productPrice, product.productPrice) == 0 && Objects.equals(productId, product.productId) && Objects.equals(productName, product.productName) && Objects.equals(productDescription, product.productDescription) && Objects.equals(category, product.category) && Objects.equals(purchase, product.purchase) && Objects.equals(listings, product.listings) && Objects.equals(players, product.players) && Objects.equals(productBrand, product.productBrand) && Objects.equals(difficulty, product.difficulty) && Objects.equals(duration, product.duration);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId, productName, productDescription, productPrice, category, purchase, listings, players, productBrand, difficulty, duration);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productName='" + productName + '\'' +
+                ", productDescription='" + productDescription + '\'' +
+                ", productPrice=" + productPrice +
+                ", productId=" + productId +
+                '}';
+    }
 }

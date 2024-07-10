@@ -23,4 +23,12 @@ public class Duration {
 
     @OneToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY, mappedBy = "duration")
     private List<Product> productList;
+
+    @Override
+    public String toString() {
+        return "Duration{" +
+                "id=" + id +
+                ", durationName='" + durationName + '\'' +
+                '}';
+    }
 }

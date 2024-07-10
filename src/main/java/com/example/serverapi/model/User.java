@@ -59,10 +59,11 @@ public class User implements Serializable, UserDetails {
     @JsonManagedReference
     private List<Purchase> purchases;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Sale> sales;
+    @ManyToMany(mappedBy = "seller")
+    private List<Sale> sells;
 
+    @OneToMany(mappedBy = "buyer")
+    private List<Sale>  salesAsBuyer;
 
     public User( String firstName, String password, String email, String address, String phoneNumber, String document, boolean isSeller) {
         this.firstName = firstName;
@@ -92,12 +93,7 @@ public class User implements Serializable, UserDetails {
         this.purchases = purchases;
     }
 
-    public void setSales(List<Sale> sales) {
-        if(this.sales == null) {
-            sales = new ArrayList<>();
-        }
-        this.sales = sales;
-    }
+
 
     public boolean isSeller() {
         return isSeller;
@@ -142,6 +138,19 @@ public class User implements Serializable, UserDetails {
         return true;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", isSeller=" + isSeller +
+                ", document='" + document + '\'' +
+                ", role=" + role +
+                '}';
+    }
 }

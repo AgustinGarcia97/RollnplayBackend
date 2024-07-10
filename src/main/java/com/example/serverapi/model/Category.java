@@ -41,4 +41,12 @@ public class Category implements Serializable {
         }
         this.products.add(product);
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryId=" + categoryId +
+                ", categoryName='" + categoryName + '\'' +
+                '}';
+    }
 }

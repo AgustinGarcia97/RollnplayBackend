@@ -23,4 +23,12 @@ public class Difficulty implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "difficulty")
     private List<Product> productList;
+
+    @Override
+    public String toString() {
+        return "Difficulty{" +
+                "id=" + id +
+                ", difficultyName='" + difficultyName + '\'' +
+                '}';
+    }
 }
