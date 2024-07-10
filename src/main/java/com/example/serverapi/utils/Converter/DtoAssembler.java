@@ -20,13 +20,14 @@ public class DtoAssembler {
     private final BrandConverter brandConverter;
     private final DurationConverter durationConverter;
     private final DifficultyConverter difficultyConverter;
+    private final SaleConverter saleConverter;
 
     @Autowired
     public DtoAssembler(UserConverter userConverter, ListingConverter listingConverter,
                         ProductConverter productConverter, CategoryConverter categoryConverter,
                         PlayerConverter playerConverter, ImageConverter imageConverter,
                         BrandConverter brandConverter, DurationConverter durationConverter,
-                        DifficultyConverter difficultyConverter) {
+                        DifficultyConverter difficultyConverter, SaleConverter saleConverter) {
 
         this.userConverter = userConverter;
         this.listingConverter = listingConverter;
@@ -37,6 +38,7 @@ public class DtoAssembler {
         this.brandConverter = brandConverter;
         this.durationConverter = durationConverter;
         this.difficultyConverter = difficultyConverter;
+        this.saleConverter = saleConverter;
     }
 
     public User getUserEntity(UserDTO userDTO) {
@@ -192,9 +194,13 @@ public class DtoAssembler {
             }
 
 
+
+
             listingDTO.getProductDTO().setCategoryName(listing.getProduct().getCategory().getCategoryName());
 
             listingDTO.getProductDTO().setPlayerCounter(listing.getProduct().getPlayers().getNumberOfPlayers());
+
+            listingDTO.getProductDTO().setProductBrand(this.getBrandDTO(listing.getProduct().getProductBrand()));
 
             listingDTO.setImages(listing.getImages().stream().map(image -> imageConverter.convertToDTO(image)).collect(Collectors.toList()));
 
@@ -217,6 +223,12 @@ public class DtoAssembler {
         ProductDTO productDTO = null;
         try{
             productDTO = productConverter.convertToDTO(product);
+            productDTO.setProductPlayers(getPlayerDTO(product.getPlayers()));
+            productDTO.setProductCategory(getCategoryDTO(product.getCategory()));
+            productDTO.setDifficultyDTO(getDifficultyDTO(product.getDifficulty()));
+            productDTO.setDurationDTO(getDurationDTO(product.getDuration()));
+            productDTO.setProductBrand(getBrandDTO(product.getProductBrand()));
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -287,6 +299,18 @@ public class DtoAssembler {
             e.printStackTrace();
         }
         return durationDTO;
+    }
+
+    public SaleDTO getSaleDTO(Sale sale){
+        try{
+            SaleDTO saleDTO = saleConverter.convertToSaleDTO(sale);
+            saleDTO.setListingsDTO(sale.getListingsSales().stream().map(this::getListingDTO).collect(Collectors.toList()));
+            saleDTO.getListingsDTO().stream().forEach(listingDTO -> listingDTO.setQuantity(sale.getListingQuantity(listingDTO.getListingId())));
+            return saleDTO;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

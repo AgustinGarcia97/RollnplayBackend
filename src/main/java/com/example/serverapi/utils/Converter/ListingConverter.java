@@ -19,6 +19,7 @@ public class ListingConverter {
             listing.setDescription(listingDTO.getDescription());
             listing.setPrice(listingDTO.getPrice());
             listing.setStock(listingDTO.getStock());
+            listing.setState(listingDTO.getListingState());
 
         } catch(IllegalArgumentException e) {
             System.out.println("values cannot be null:"+e.getMessage());
@@ -39,7 +40,7 @@ public class ListingConverter {
             listingDTO.setPrice(listing.getPrice());
             listingDTO.setStock(listing.getStock());
             listingDTO.setUserId(listing.getUser().getUserId());
-
+            listingDTO.setListingState(listing.getState());
         } catch(IllegalArgumentException e) {
             System.out.println("values cannot be null:"+e.getMessage());
         } catch(ConversionException e) {

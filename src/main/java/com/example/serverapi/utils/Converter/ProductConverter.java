@@ -14,8 +14,10 @@ public class ProductConverter {
             if(productDTO.getProductId() != null){
                 product.setProductId(productDTO.getProductId());
             }
-            product.setProductName(productDTO.getProductName());
-            product.setProductDescription(productDTO.getProductDescription());
+            if(productDTO.getProductName() != null)
+                product.setProductName(productDTO.getProductName());
+            if(productDTO.getProductDescription() != null)
+                product.setProductDescription(productDTO.getProductDescription());
 
         }
         catch(IllegalArgumentException e){
@@ -40,6 +42,7 @@ public class ProductConverter {
             productDTO.setCategoryName(product.getCategory().getCategoryName());
             productDTO.setPlayerCounter(product.getPlayers().getNumberOfPlayers());
             productDTO.setBrandName(product.getProductBrand().getBrandName());
+            productDTO.setDifficulty(product.getDifficulty().getDifficultyName());
 
         }
         catch(IllegalArgumentException e){

@@ -14,15 +14,7 @@ import java.util.Optional;
 @Component
 public class SaleConverter {
 
-    @Autowired
-    private ProductConverter productConverter;
-
-    @Autowired
-    private ListingConverter listingConverter;
-
-    @Autowired
-    private UserService userService;
-
+/*
     public Sale convertToEntity(SaleDTO saleDTO){
         Sale sale = new Sale();
         try {
@@ -33,6 +25,7 @@ public class SaleConverter {
             sale.setSaleDate(saleDTO.getSaleDate());
             Optional<User> existence = userService.getUserById(saleDTO.getUserId());
 
+            /*
             if (existence.isPresent()) {
                 sale.setUser(existence.get());
             } else {
@@ -45,16 +38,22 @@ public class SaleConverter {
                 throw new ConversionException("Error converting ListingDTO to listing ", e);
             }
 
-            try {
-                sale.setProductSales(productConverter.convertToEntity(saleDTO.getProductDT0()));
-            } catch (Exception e) {
-                throw new ConversionException("Error converting ProductDTO to product ", e);
-            }
+
         }
         catch (Exception e) {
             throw e;
         }
 
         return sale;
+    } */
+    public SaleDTO convertToSaleDTO(Sale sale){
+        SaleDTO saleDTO = new SaleDTO();
+        saleDTO.setSaleId(sale.getSaleId());
+        saleDTO.setSaleDate(sale.getSaleDate());
+        saleDTO.setPrice(sale.getPrice());
+        saleDTO.setBuyerName(sale.getBuyer().getUsername());
+        saleDTO.setSellerName(sale.getSeller().getFirst().getUsername());
+        return saleDTO;
+
     }
 }

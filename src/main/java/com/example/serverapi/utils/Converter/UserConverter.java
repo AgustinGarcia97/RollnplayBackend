@@ -4,10 +4,14 @@ import com.example.serverapi.dto.UserDTO;
 import com.example.serverapi.exceptions.dtoExceptions.ConversionException;
 import com.example.serverapi.model.Role;
 import com.example.serverapi.model.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverter {
+
+
 
 
     public User convertToEntity(UserDTO userDTO) {
@@ -17,16 +21,35 @@ public class UserConverter {
 
             if (userDTO.getUserId() != null) {
                 user.setUserId(userDTO.getUserId());
+                user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+
+            }
+            else{
+                user.setPassword(userDTO.getPassword());
+            }
+            if(userDTO.getRole() != null) {
+                user.setRole(Role.valueOf(userDTO.getRole()));
+            }
+            if(userDTO.getUsername() != null) {
+                user.setEmail(userDTO.getUsername());
+            }
+            if(userDTO.getFirstName()  != null){
+                user.setFirstName(userDTO.getFirstName());
+            }
+            if(userDTO.getLastName() != null) {
+                user.setLastName(userDTO.getLastName());
+            }
+            if(userDTO.getPhoneNumber() != null){
+                user.setPhoneNumber(userDTO.getPhoneNumber());
             }
 
-            user.setFirstName(userDTO.getName());
-            user.setPassword(userDTO.getPassword());
-            user.setEmail(userDTO.getMail());
-            user.setPhoneNumber(userDTO.getPhoneNumber());
-            user.setAddress(userDTO.getAddress());
-            user.setDocument(userDTO.getDocument());
-            user.setRole(Role.valueOf(userDTO.getRole()));
+            if(userDTO.getAddress() != null) {
+                user.setAddress(userDTO.getAddress());
+            }
 
+            if(userDTO.getDocument() != null){
+                user.setDocument(userDTO.getDocument());
+            }
 
         } catch (IllegalArgumentException e) {
             System.out.println("values cannot be null:" + e.getMessage());
@@ -72,7 +95,8 @@ public class UserConverter {
             userDTO.setPhoneNumber(user.getPhoneNumber());
             userDTO.setRole(user.getRole().toString());
             userDTO.setDocument(user.getDocument());
-            userDTO.setName(user.getFirstName());
+            userDTO.setFirstName(user.getFirstName());
+            userDTO.setLastName(user.getLastName());
             
 
 

@@ -17,7 +17,9 @@ public class BrandConverter {
 
     public BrandDTO convertToDto(Brand brand){
         BrandDTO brandDTO = new BrandDTO();
-        brandDTO.setBrandId(brand.getBrandId());
+        if(brand.getBrandId() != null) {
+            brandDTO.setBrandId(brand.getBrandId());
+        }
         brandDTO.setBrandName(brand.getBrandName());
         return brandDTO;
     }
