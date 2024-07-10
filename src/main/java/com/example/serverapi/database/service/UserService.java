@@ -6,6 +6,7 @@ import com.example.serverapi.dto.UserDTO;
 import com.example.serverapi.exceptions.userExceptions.UserConversionException;
 import com.example.serverapi.exceptions.userExceptions.UserPersistenceException;
 import com.example.serverapi.model.Listing;
+import com.example.serverapi.model.Role;
 import com.example.serverapi.model.User;
 
 import com.example.serverapi.utils.Converter.DtoAssembler;
@@ -72,6 +73,31 @@ public class UserService {
 
             if(user.isPresent()) {
                 userDTO = dtoAssembler.getUserDTO(user.get());
+                /*
+                if(user.get().getListings() != null){
+                    userDTO.setListingsDTO(
+                            user.get()
+                                    .getListings()
+                                    .stream()
+                                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                                    .collect(Collectors.toList()));
+                }
+            */
+            }
+        }catch (EntityNotFoundException e) {
+            throw new UserPersistenceException("Entity not found", e);
+        }
+        return userDTO;
+    }
+
+    public UserDTO getUserDTOByEmail(String email) {
+        UserDTO userDTO = null;
+        try{
+            Optional<User> user = userRepository.findByEmail(email);
+
+            if(user.isPresent()) {
+                userDTO = dtoAssembler.getUserDTO(user.get());
+
 
                 if(user.get().getListings() != null){
                     userDTO.setListingsDTO(
@@ -87,6 +113,11 @@ public class UserService {
             throw new UserPersistenceException("Entity not found", e);
         }
         return userDTO;
+
+    }
+
+    public List<UserDTO>  getAllUserDTO () {
+        return userRepository.findAll().stream().map(user -> dtoAssembler.getUserDTO(user)).collect(Collectors.toList());
     }
 
     public List<Listing> getListingById(UUID id){
@@ -95,5 +126,19 @@ public class UserService {
 
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
+    }
+
+    public UserDTO updateUserRole(UserDTO userDTO){
+        Optional<User> existence = userRepository.findByEmail(userDTO.getUsername());
+        UserDTO userDTOUpdated = null;
+        if(existence.isPresent()){
+            User user = existence.get();
+            user.setRole(Role.valueOf(userDTO.getRole()));
+            userRepository.save(user);
+             userDTOUpdated = dtoAssembler.getUserDTO(user);
+
+        }
+        return userDTOUpdated;
+
     }
 }

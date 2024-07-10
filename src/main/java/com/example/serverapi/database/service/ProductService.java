@@ -1,7 +1,9 @@
 package com.example.serverapi.database.service;
 
+import com.example.serverapi.database.repository.ListingRepository;
 import com.example.serverapi.database.repository.PlayerRepository;
 import com.example.serverapi.database.repository.ProductRepository;
+import com.example.serverapi.database.repository.SaleRepository;
 import com.example.serverapi.dto.ProductDTO;
 import com.example.serverapi.exceptions.CustomDatabaseException;
 import com.example.serverapi.model.*;
@@ -17,15 +19,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
 
-
-
+    private final SaleRepository saleRepository;
     private ProductRepository productRepository;
+
+    private final ListingRepository listingRepository;
 
     private final CategoryService categoryService;
 
@@ -44,18 +51,20 @@ public class ProductService {
 
 
     @Autowired
-    public ProductService(ProductRepository productRepository, DtoAssembler dtoAssembler,
+    public ProductService(ProductRepository productRepository, ListingRepository listingRepository, DtoAssembler dtoAssembler,
                           CategoryService categoryService, PlayerService playerService,
                           BrandService brandService, DurationService durationService,
-                          DifficultyService difficultyService) {
+                          DifficultyService difficultyService, SaleRepository saleRepository) {
 
         this.productRepository = productRepository;
+        this.listingRepository = listingRepository;
         this.dtoAssembler = dtoAssembler;
         this.categoryService = categoryService;
         this.playerService = playerService;
         this.brandService = brandService;
         this.durationService = durationService;
         this.difficultyService = difficultyService;
+        this.saleRepository = saleRepository;
     }
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -68,6 +77,8 @@ public class ProductService {
                 productDTO = dtoAssembler.getProductDTO(existence.get());
                 productDTO.setProductCategory(dtoAssembler.getCategoryDTO(existence.get().getCategory()));
                 productDTO.setProductPlayers(dtoAssembler.getPlayerDTO(existence.get().getPlayers()));
+
+
             }
             else {
                 throw new EntityNotFoundException("Product with id " + id + " not found");
@@ -92,7 +103,7 @@ public class ProductService {
         Product product = null;
         Category category = null;
         Player player = null;
-        Brand brand;
+        Brand brand = new Brand();
         Duration duration = null;
         Difficulty difficulty = null;
 
@@ -152,8 +163,9 @@ public class ProductService {
 
 
         }
-        catch(HibernateException e){
+        catch(Exception e){
             logger.error("Error saving product: {}",product, e);
+            System.out.println("ERRRRRRRRRRROR");
             throw new CustomDatabaseException("Error saving product:",e);
         }
 
@@ -163,8 +175,38 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(Long id) {
+
+        // Luego eliminar el producto
         productRepository.deleteById(id);
+
+
     }
+
+    public List<ProductDTO> getAllProductsDTO(){
+
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        List<Product> products = productRepository.findAll();
+        try{
+
+       products.forEach(product-> {
+           ProductDTO productDTO = dtoAssembler.getProductDTO(product);
+           productDTO.setCategoryName(product.getCategory().getCategoryName());
+           productDTO.setBrandName(product.getProductBrand().getBrandName());
+           productDTO.setDifficulty(product.getDifficulty().getDifficultyName());
+           productDTO.setDuration(product.getDuration().getDurationName());
+
+           productDTOList.add(productDTO);
+
+       });
+
+        } catch (Exception e){
+          logger.error("Error getting products list", e);
+        }
+        return productDTOList;
+    }
+
+
+
 
 
 
