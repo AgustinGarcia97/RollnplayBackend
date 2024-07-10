@@ -2,14 +2,13 @@ package com.example.serverapi.database.service;
 
 
 import com.example.serverapi.database.repository.ListingRepository;
+import com.example.serverapi.database.repository.SaleRepository;
+import com.example.serverapi.database.repository.UserRepository;
 import com.example.serverapi.dto.ImageDTO;
 import com.example.serverapi.dto.ListingDTO;
 import com.example.serverapi.exceptions.dtoExceptions.ConversionException;
 import com.example.serverapi.exceptions.userExceptions.UserNotFoundException;
-import com.example.serverapi.model.Image;
-import com.example.serverapi.model.Listing;
-import com.example.serverapi.model.Product;
-import com.example.serverapi.model.User;
+import com.example.serverapi.model.*;
 
 import com.example.serverapi.utils.Converter.DtoAssembler;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,26 +25,31 @@ import java.util.stream.Collectors;
 public class ListingService {
 
     private final ProductService productService;
+    private final SaleRepository saleRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
     private ListingRepository listingRepository;
     private ImageService imageService;
     private DtoAssembler dtoAssembler;
 
     @Autowired
-    public ListingService(ListingRepository listingRepository, DtoAssembler dtoAssembler,
-                          ProductService productService, UserService userService, ImageService imageService){
+    public ListingService(SaleRepository saleRepository, ListingRepository listingRepository, DtoAssembler dtoAssembler,
+                          ProductService productService, UserService userService, ImageService imageService, UserRepository userRepository){
+        this.saleRepository = saleRepository;
         this.listingRepository = listingRepository;
         this.dtoAssembler = dtoAssembler;
         this.productService = productService;
         this.userService = userService;
         this.imageService = imageService;
+        this.userRepository = userRepository;
     }
 
     @Transactional
-    public Optional<?> createOrUpdateListing(ListingDTO listingDTO) {
+    public void createOrUpdateListing(ListingDTO listingDTO) {
         Listing listing = null;
         try {
             listing = dtoAssembler.getListingEntity(listingDTO);
+
             Product product = null;
             List<Image> images = new ArrayList<>();
             List<ImageDTO> imagesDTO = new ArrayList<>();
@@ -71,8 +75,8 @@ public class ListingService {
                 for (ImageDTO imageDTO : imagesDTO) {
                     Image image = dtoAssembler.getImageEntity(imageDTO);
                     images.add(image);
-                    }
                 }
+            }
 
 
 
@@ -91,7 +95,6 @@ public class ListingService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return Optional.ofNullable(listing);
 
     }
 
@@ -117,7 +120,18 @@ public class ListingService {
         }
     }
 
+    public Listing getListingEntityById(long id){
+        return listingRepository.findById(id).orElse(null);
+    }
+
     public void deleteListing(long id) {
+        Listing listing = getListingEntityById(id);
+        if(listing.getSales() != null && !listing.getSales().isEmpty()) {
+            listing.preRemove();
+            saleRepository.saveAll(listing.getSales());
+        }
+
+
         listingRepository.deleteById(id);
     }
 
@@ -151,5 +165,137 @@ public class ListingService {
 
     }
 
+    @Transactional
+    public List<ListingDTO> getListingsDTOByProductName(String productName) {
+        List<ListingDTO> listingsDTO = null;
+        System.out.println(productName);
+        List<Listing> list = listingRepository.findAll();
+        try{
+            listingsDTO = listingRepository.findAll().stream()
+                    .filter(listing -> listing.getProduct().getProductName().equals(productName))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByCategory(String category) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .filter(listingDTO -> listingDTO.getProductDTO().getCategoryName().equals(category))
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByBrand(String brand) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .filter(listing -> listing.getProduct().getProductBrand().getBrandName().equals(brand))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByDuration(String duration) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .filter(listing -> listing.getProduct().getDuration().getDurationName().equals(duration))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByDifficulty(String difficulty) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .filter(listing -> listing.getProduct().getDifficulty().getDifficultyName().equals(difficulty))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByPlayerCuantity(String players) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .filter(listing -> listing.getProduct().getPlayers().getNumberOfPlayers().equals(players))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+    public List<ListingDTO> getListingsDTOByPrice(double price) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .filter(listingDTO -> listingDTO.getPrice() <= price)
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
+
+
+    public List<ListingDTO> getListingsDTOByUser(String email) {
+        List<ListingDTO> listingsDTO = null;
+
+        try{
+            listingsDTO = this.getAllListings().stream()
+                    .filter(listing -> listing.getUser().getUsername().equals(email))
+                    .map(listing -> dtoAssembler.getListingDTO(listing))
+                    .collect(Collectors.toList());
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return listingsDTO;
+
+    }
 
 }
