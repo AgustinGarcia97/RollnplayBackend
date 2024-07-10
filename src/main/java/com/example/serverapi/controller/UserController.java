@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.serverapi.model.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @RequestMapping("/user")
@@ -48,6 +49,47 @@ public class UserController {
         }
 
     }
+
+    @GetMapping("/get-user/email")
+    public ResponseEntity<UserDTO> getUser(@RequestParam String email ){
+        try{
+            UserDTO userDTO = userService.getUserDTOByEmail(email);
+
+            return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+        }
+        catch(UserPersistenceException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch(UserConversionException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-all-users")
+    public ResponseEntity<List<UserDTO>> getAllUser(){
+        try{
+            List<UserDTO> userDTO = userService.getAllUserDTO();
+
+            return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+        }
+        catch(UserPersistenceException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch(UserConversionException e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
     @PostMapping("/create-user")
@@ -95,6 +137,30 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse +" DTO: "+ userDTO.toString());
         }
     }
+
+    @PutMapping("/update-user-role")
+    public ResponseEntity<?> updateUserRole(@RequestBody UserDTO userDTO){
+        try{
+            UserDTO user = userService.updateUserRole(userDTO);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuario actualizado correctamente: ");
+
+        } catch(UserConversionException e){
+            logger.error("Error converting UserDTO to User entity: {} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Conversion error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+
+        } catch(UserPersistenceException e){
+            logger.error("Error persisnting User entity:{} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Persistence error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+
+        }catch(Exception e){
+            logger.error("Unexpected error:{} ",e.getMessage());
+            ErrorResponse errorResponse = new ErrorResponse("Unexpected error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse +" DTO: "+ userDTO.toString());
+        }
+    }
+
 
 
     @DeleteMapping("/delete-user")
