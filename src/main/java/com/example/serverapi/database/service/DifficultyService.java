@@ -7,7 +7,9 @@ import com.example.serverapi.utils.Converter.DtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DifficultyService {
@@ -35,5 +37,15 @@ public class DifficultyService {
     public Optional<Difficulty> getDifficultyDTOById(Long id) {
         Optional<Difficulty> difficulty = difficultyRepository.findById(id);
         return difficulty;
+    }
+
+    public List<DifficultyDTO> getAllDifficultiesDto(){
+        try{
+            return difficultyRepository.findAll().stream().map(dtoAssembler::getDifficultyDTO).collect(Collectors.toList());
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }
