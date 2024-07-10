@@ -26,5 +26,20 @@ public class ProductDTO {
     private String brandName;
     private double productPrice;
 
+    public ProductDTO(Long productId, String productName,
+                      String productDescription,CategoryDTO productCategory,
+                      PlayerDTO productPlayers, BrandDTO productBrand,
+                      DurationDTO durationDTO, DifficultyDTO difficultyDTO){
+        this.productId = productId;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productCategory = productCategory;
+        this.productPlayers = productPlayers;
+        this.productBrand = productBrand;
+        this.durationDTO = durationDTO;
+        this.difficultyDTO = difficultyDTO;
+
+    }
+
 
 }

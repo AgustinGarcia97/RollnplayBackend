@@ -12,9 +12,17 @@ import java.util.UUID;
 public class SaleDTO {
     private Long saleId;
     private LocalDateTime saleDate;
+    private UUID seller;
+    private UUID buyer;
+    private String sellerName;
+    private String buyerName;
+    private List<ListingDTO> listingsDTO;
+
+    private double price;
+
     private UUID userId;
-    private ProductDTO productDT0;
     private ListingDTO listingDTO;
-    private int productsQuantity;
+
+
 
 }

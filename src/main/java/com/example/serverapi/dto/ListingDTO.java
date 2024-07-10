@@ -26,6 +26,7 @@ public class ListingDTO {
     private ProductDTO productDTO;
     private boolean listingState;
     private List<ImageDTO> images;
+    private double quantity;
 
     public boolean getListingState() {
         return listingState;
