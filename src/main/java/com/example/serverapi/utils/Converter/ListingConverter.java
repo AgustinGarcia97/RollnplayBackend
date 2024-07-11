@@ -21,6 +21,7 @@ public class ListingConverter {
             listing.setStock(listingDTO.getStock());
             listing.setState(listingDTO.getListingState());
 
+
         } catch(IllegalArgumentException e) {
             System.out.println("values cannot be null:"+e.getMessage());
         } catch(ConversionException e) {

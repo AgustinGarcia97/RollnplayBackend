@@ -57,6 +57,8 @@ public class SecurityConfig {
                         .requestMatchers("/user/**").hasAnyAuthority(Role.ADMIN.name())
                         .requestMatchers("/listing/**").hasAnyAuthority(Role.USER.name())
                         .requestMatchers("/listing/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers("/listing/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers(HttpMethod.DELETE, "/delete-product").hasAuthority(Role.ADMIN.name())
                         .anyRequest()
                         .authenticated())
 

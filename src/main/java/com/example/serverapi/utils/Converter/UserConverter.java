@@ -21,6 +21,7 @@ public class UserConverter {
 
             if (userDTO.getUserId() != null) {
                 user.setUserId(userDTO.getUserId());
+                System.out.println(userDTO.getPassword());
                 user.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
 
             }
