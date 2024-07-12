@@ -83,6 +83,7 @@ public class ImageService {
         return imageRepository.findByImageUrl(imageUrl);
     }
 
+    @Transactional
     public void deleteImageById(Long id) {
         imageRepository.deleteById(id);
     }

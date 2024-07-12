@@ -5,6 +5,7 @@ import com.example.serverapi.dto.CategoryDTO;
 import com.example.serverapi.model.Category;
 
 import com.example.serverapi.utils.Converter.DtoAssembler;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class CategoryService {
         this.dtoAssembler = dtoAssembler;
     }
 
+    @Transactional
     public Category createOrUpdateCategory(CategoryDTO categoryDTO) {
         Category category = null;
 

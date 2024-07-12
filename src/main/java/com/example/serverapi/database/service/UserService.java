@@ -12,6 +12,7 @@ import com.example.serverapi.model.User;
 import com.example.serverapi.utils.Converter.DtoAssembler;
 import com.example.serverapi.utils.Converter.UserConverter;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,7 +31,7 @@ public class UserService {
 
     private UserConverter userConverter;
 
-    private UserService(UserRepository userRepository, UserConverter userConverter, DtoAssembler dtoAssembler) {
+    public UserService(UserRepository userRepository, UserConverter userConverter, DtoAssembler dtoAssembler) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.dtoAssembler = dtoAssembler;
@@ -39,7 +40,7 @@ public class UserService {
     public List<User> findAll() {
         return userRepository.findAll();
     }
-
+    @Transactional
     public User createOrUpdateUser(UserDTO userDTO) {
         try{
             User user = userConverter.convertToEntity(userDTO);
@@ -123,11 +124,11 @@ public class UserService {
     public List<Listing> getListingById(UUID id){
        return userRepository.findById(id).get().getListings();
     }
-
+    @Transactional
     public void deleteUser(UUID id) {
         userRepository.deleteById(id);
     }
-
+    @Transactional
     public UserDTO updateUserRole(UserDTO userDTO){
         Optional<User> existence = userRepository.findByEmail(userDTO.getUsername());
         UserDTO userDTOUpdated = null;

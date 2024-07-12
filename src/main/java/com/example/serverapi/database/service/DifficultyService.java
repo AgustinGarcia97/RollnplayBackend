@@ -4,6 +4,7 @@ import com.example.serverapi.database.repository.DifficultyRepository;
 import com.example.serverapi.dto.DifficultyDTO;
 import com.example.serverapi.model.Difficulty;
 import com.example.serverapi.utils.Converter.DtoAssembler;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class DifficultyService {
         this.dtoAssembler = dtoAssembler;
     }
 
+    @Transactional
     public Difficulty createOrUpdateDifficulty(DifficultyDTO difficultyDTO) {
         Difficulty difficulty = null;
         try{

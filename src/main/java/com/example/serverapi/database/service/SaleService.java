@@ -8,6 +8,7 @@ import com.example.serverapi.model.Purchase;
 import com.example.serverapi.model.Sale;
 import com.example.serverapi.model.User;
 import com.example.serverapi.utils.Converter.DtoAssembler;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class SaleService {
     public void saveSale(Sale sale){
         saleRepository.save(sale);
     }
-
+    @Transactional
     public Sale createSale(SaleDTO saleDTO){
         /**
          * 1) extraer las publicaciones

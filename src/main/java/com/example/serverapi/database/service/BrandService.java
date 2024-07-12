@@ -5,6 +5,7 @@ import com.example.serverapi.database.repository.BrandRepository;
 import com.example.serverapi.dto.BrandDTO;
 import com.example.serverapi.model.Brand;
 import com.example.serverapi.utils.Converter.DtoAssembler;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class BrandService {
         this.dtoAssembler = dtoAssembler;
     }
 
+    @Transactional
     public Brand createOrUpdateBrand(BrandDTO brandDTO) {
         Brand brand = null;
         try{

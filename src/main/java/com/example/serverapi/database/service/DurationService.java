@@ -4,6 +4,7 @@ import com.example.serverapi.database.repository.DurationRepository;
 import com.example.serverapi.dto.DurationDTO;
 import com.example.serverapi.model.Duration;
 import com.example.serverapi.utils.Converter.DtoAssembler;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class DurationService {
         this.dtoAssembler = dtoAssembler;
     }
 
+    @Transactional
     public Duration createOrUpdateDuration(DurationDTO durationDTO) {
         Duration duration = null;
         try{

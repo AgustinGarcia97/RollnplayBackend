@@ -124,6 +124,7 @@ public class ListingService {
         return listingRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void deleteListing(long id) {
         Listing listing = getListingEntityById(id);
         if(listing.getSales() != null && !listing.getSales().isEmpty()) {
@@ -143,7 +144,7 @@ public class ListingService {
         return listingRepository.findById(id);
     }
 
-    @Transactional
+
     public Optional<List<ListingDTO>> getAllListingsDTO() {
         try{
             List<Listing> listings = listingRepository.findAll();
@@ -172,7 +173,7 @@ public class ListingService {
         List<Listing> list = listingRepository.findAll();
         try{
             listingsDTO = listingRepository.findAll().stream()
-                    .filter(listing -> listing.getProduct().getProductName().equals(productName))
+                    .filter(listing -> listing.getProduct().getProductName().equalsIgnoreCase(productName))
                     .map(listing -> dtoAssembler.getListingDTO(listing))
                     .collect(Collectors.toList());
 
